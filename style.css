@@ -1,0 +1,114 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Logo IPS (canto superior esquerdo) */
+.logo1 {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+}
+
+.logo1 img {
+    height: 170px;
+    width: auto;
+}
+
+/* Logo MIPS (centrado no topo) */
+.logo2 {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.logo2 img {
+    height: 80px;
+    width: auto;
+}
+
+/* Caixa de login centrada */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    margin-top: 180px;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Campos de texto */
+.input-box {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.input-box .input-field {
+    width: 100%;
+    height: 55px;
+    border: none;
+    border-radius: 30px;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 0 20px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.input-box .input-field:focus {
+    outline: none;
+    transform: scale(1.02);
+}
+
+/* Botão */
+.input-submit {
+    width: 100%;
+}
+
+.submit-btn {
+    width: 100%;
+    height: 55px;
+    background: #111;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-btn:hover {
+    background: #000;
+    transform: scale(1.05);
+}
+
+/* Link “Recuperar senha” */
+form::after {
+    content: "Esqueceu-se da senha? Recuperar senha";
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #444;
+}
+
+form::after span {
+    color: #000;
+    font-weight: 600;
+}

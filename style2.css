@@ -1,0 +1,176 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+.sidebar {
+  position: fixed;
+  height: 100%;
+  width: 260px;
+  background: #4d6378;
+  padding: 15px;
+  z-index: 99;
+}
+.logo {
+  font-size: 25px;
+  padding: 0 15px;
+}
+.sidebar a {
+  color: white;
+  text-decoration: none;
+}
+.menu-content {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  margin-top: 40px;
+  overflow-y: scroll;
+}
+.menu-content::-webkit-scrollbar {
+  display: none;
+}
+.menu-items {
+  height: 100%;
+  width: 100%;
+  list-style: none;
+  transition: all 0.4s ease;
+}
+.submenu-active .menu-items {
+  transform: translateX(-56%);
+}
+.menu-title {
+  color: BLACK;
+  font-size: 14px;
+  padding: 15px 20px;
+}
+.item a,
+.submenu-item {
+  padding: 16px;
+  display: inline-block;
+  width: 100%;
+  border-radius: 12px;
+}
+.item i {
+  font-size: 12px;
+}
+.item a:hover,
+.submenu-item:hover,
+.submenu .menu-title:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+.navbar,
+.main {
+  left: 260px;
+  width: calc(100% - 260px);
+  transition: all 0.5s ease;
+  z-index: 1000;
+}
+.sidebar.close ~ .navbar,
+.sidebar.close ~ .main {
+  left: 0;
+  width: 100%;
+}
+.navbar {
+  position: fixed;
+  color: black;
+  padding: 15px 20px;
+  font-size: 25px;
+  background: #9ba8b6;
+  cursor: pointer;
+}
+.navbar #sidebar-close {
+  cursor: pointer;
+}
+.main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  z-index: 100;
+  background: #fff;
+}
+.main h1 {
+  color: black;
+  font-size: 40px;
+  text-align: center;
+}
+
+.logo1 {
+    position: absolute;
+    top: 15px;
+    left: 30px;
+}
+
+.logo1 img {
+    height: 50px;
+    width: auto;
+}
+
+.logo2 {
+    position: absolute;
+    top: 50%;
+    left: 45%;
+}
+
+.logo2 img {
+    height: 75px;
+    width: auto;
+}
+
+.planta-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.planta-img {
+  width: 100%;
+  height: auto;
+  max-height: 100vh;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.seta {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.seta:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.seta-esquerda {
+  left: 20px;
+}
+
+.seta-direita {
+  right: 20px;
+}
+
+.planta-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.andar-texto {
+  margin-top: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
