@@ -1,10 +1,20 @@
-
+/* ===========================
+   CONFIGURAÇÃO GERAL
+=========================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
+
+body {
+  background-color: #ffffff;
+}
+
+/* ===========================
+   SIDEBAR (MENU LATERAL)
+=========================== */
 .sidebar {
   position: fixed;
   height: 100%;
@@ -13,125 +23,142 @@
   padding: 15px;
   z-index: 99;
 }
-.logo {
-  font-size: 25px;
-  padding: 0 15px;
-}
+
 .sidebar a {
   color: white;
   text-decoration: none;
 }
+
+.logo1 {
+  position: absolute;
+  top: 15px;
+  left: 30px;
+}
+
+.logo1 img {
+  height: 50px;
+  width: auto;
+}
+
 .menu-content {
   position: relative;
   height: 100%;
   width: 100%;
-  margin-top: 40px;
-  overflow-y: scroll;
+  margin-top: 90px;
+  overflow-y: auto;
 }
+
 .menu-content::-webkit-scrollbar {
   display: none;
 }
-.menu-items {
-  height: 100%;
-  width: 100%;
+
+.menu-content ul {
   list-style: none;
-  transition: all 0.4s ease;
+  padding: 0;
 }
-.submenu-active .menu-items {
-  transform: translateX(-56%);
+
+.item a {
+  display: block;
+  padding: 14px;
+  border-radius: 10px;
+  transition: background 0.3s;
+  font-size: 15px;
+  letter-spacing: 0.5px;
 }
-.menu-title {
-  color: BLACK;
-  font-size: 14px;
-  padding: 15px 20px;
-}
-.item a,
-.submenu-item {
-  padding: 16px;
-  display: inline-block;
-  width: 100%;
-  border-radius: 12px;
-}
-.item i {
-  font-size: 12px;
-}
-.item a:hover,
-.submenu-item:hover,
-.submenu .menu-title:hover {
+
+.item a:hover {
   background: rgba(255, 255, 255, 0.1);
 }
-.navbar,
-.main {
-  left: 260px;
-  width: calc(100% - 260px);
-  transition: all 0.5s ease;
-  z-index: 1000;
-}
-.sidebar.close ~ .navbar,
-.sidebar.close ~ .main {
-  left: 0;
-  width: 100%;
-}
+
+/* ===========================
+   NAVBAR (BARRA SUPERIOR)
+=========================== */
 .navbar {
   position: fixed;
+  top: 0;
+  left: 260px;
+  width: calc(100% - 260px);
   color: black;
   padding: 15px 20px;
   font-size: 25px;
   background: #9ba8b6;
   cursor: pointer;
+  transition: all 0.5s ease;
+  z-index: 1000;
 }
-.navbar #sidebar-close {
+
+#sidebar-close {
   cursor: pointer;
 }
+
+/* Quando a sidebar fecha */
+.sidebar.close {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.4s ease;
+}
+
+.sidebar.close ~ .navbar,
+.sidebar.close ~ .main {
+  left: 0;
+  width: 100%;
+  transition: all 0.4s ease;
+}
+
+
+/* ===========================
+   CONTEÚDO PRINCIPAL
+=========================== */
 .main {
   position: relative;
+  left: 260px;
+  width: calc(100% - 260px);
+  min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
-  z-index: 100;
+  align-items: center;
   background: #fff;
+  padding: 40px;
+  transition: all 0.5s ease;
 }
+
 .main h1 {
   color: black;
   font-size: 40px;
   text-align: center;
 }
 
-.logo1 {
-    position: absolute;
-    top: 15px;
-    left: 30px;
-}
-
-.logo1 img {
-    height: 50px;
-    width: auto;
-}
-
+/* ===========================
+   LOGO CENTRAL
+=========================== */
 .logo2 {
-    position: absolute;
-    top: 50%;
-    left: 45%;
+  position: absolute;
+  top: 50%;
+  left: 45%;
 }
 
 .logo2 img {
-    height: 75px;
-    width: auto;
+  height: 75px;
+  width: auto;
 }
 
+/* ===========================
+   MAPA INTERATIVO
+=========================== */
 .planta-container {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
 }
 
 .planta-img {
   width: 100%;
   height: auto;
-  max-height: 100vh;
+  max-height: 90vh;
   object-fit: contain;
   border-radius: 10px;
 }
@@ -173,4 +200,104 @@
   font-size: 1.5rem;
   font-weight: bold;
   color: #333;
+}
+
+/* ===========================
+   SECÇÕES INTERNAS (texto, formulários, etc)
+=========================== */
+.descricao-inicial {
+  text-align: center;
+  max-width: 800px;
+  margin: auto;
+  color: #333;
+}
+
+.descricao-inicial h1 {
+  margin-bottom: 15px;
+  font-size: 2.2rem;
+}
+
+.descricao-inicial p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.secao {
+  text-align: center;
+  padding: 40px;
+  width: 100%;
+}
+
+.secao h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.secao p {
+  color: #555;
+  font-size: 1.1rem;
+}
+
+/* ===========================
+   FORMULÁRIO DE RESERVA
+=========================== */
+.form-reserva {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.form-reserva label {
+  margin-top: 10px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-reserva input {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 60%;
+  max-width: 300px;
+}
+
+.form-reserva button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4d6378;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.form-reserva button:hover {
+  background-color: #3d5163;
+}
+
+/* ===========================
+   RESPONSIVIDADE
+=========================== */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .navbar {
+    left: 200px;
+    width: calc(100% - 200px);
+  }
+
+  .main {
+    left: 200px;
+    width: calc(100% - 200px);
+  }
+
+  .descricao-inicial h1 {
+    font-size: 1.8rem;
+  }
 }
