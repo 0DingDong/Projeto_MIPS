@@ -5,11 +5,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
-  background-color: #ffffff;
+  background: #f5f7fa;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* ===========================
@@ -18,10 +20,17 @@ body {
 .sidebar {
   position: fixed;
   height: 100%;
-  width: 260px;
-  background: #4d6378;
-  padding: 15px;
+  width: 280px;
+  background: linear-gradient(180deg, #0077B6 0%, #00A9A5 100%);
+  padding: 0;
   z-index: 99;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.sidebar.close {
+  width: 0;
+  overflow: hidden;
 }
 
 .sidebar a {
@@ -29,27 +38,53 @@ body {
   text-decoration: none;
 }
 
+/* Logo na Sidebar */
 .logo1 {
-  position: absolute;
-  top: 15px;
-  left: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
 }
 
 .logo1 img {
-  height: 50px;
+  height: 60px;
   width: auto;
+  filter: brightness(1.1);
+  transition: transform 0.3s ease;
 }
 
+.logo1 img:hover {
+  transform: scale(1.05);
+}
+
+/* Menu Content */
 .menu-content {
   position: relative;
-  height: 100%;
+  height: calc(100% - 110px);
   width: 100%;
-  margin-top: 90px;
+  margin-top: 0;
   overflow-y: auto;
+  padding: 20px 15px 0 15px;
 }
 
 .menu-content::-webkit-scrollbar {
-  display: none;
+  width: 6px;
+}
+
+.menu-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.menu-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.menu-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .menu-content ul {
@@ -57,17 +92,47 @@ body {
   padding: 0;
 }
 
+.item {
+  margin-bottom: 8px;
+}
+
 .item a {
-  display: block;
-  padding: 14px;
-  border-radius: 10px;
-  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
   font-size: 15px;
+  font-weight: 500;
   letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.item a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(180deg, #2D6A4F, #52b788);
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
 }
 
 .item a:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(45, 106, 79, 0.25);
+  transform: translateX(5px);
+  padding-left: 25px;
+}
+
+.item a:hover::before {
+  transform: scaleY(1);
+}
+
+.item a:active {
+  transform: translateX(3px) scale(0.98);
 }
 
 /* ===========================
@@ -76,70 +141,110 @@ body {
 .navbar {
   position: fixed;
   top: 0;
-  left: 260px;
-  width: calc(100% - 260px);
-  color: black;
-  padding: 15px 20px;
-  font-size: 25px;
-  background: #9ba8b6;
-  cursor: pointer;
-  transition: all 0.5s ease;
-  z-index: 1000;
+  left: 280px;
+  width: calc(100% - 280px);
+  height: 70px;
+  padding: 0 30px;
+  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s ease;
+  z-index: 98;
+}
+
+.sidebar.close ~ .navbar {
+  left: 0;
+  width: 100%;
 }
 
 #sidebar-close {
+  font-size: 26px;
+  color: white;
   cursor: pointer;
+  padding: 10px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
-/* Quando a sidebar fecha */
-.sidebar.close {
-  width: 0;
-  overflow: hidden;
-  transition: width 0.4s ease;
+#sidebar-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(180deg);
 }
 
-.sidebar.close ~ .navbar,
-.sidebar.close ~ .main {
-  left: 0;
-  width: 100%;
-  transition: all 0.4s ease;
+#sidebar-close:active {
+  transform: rotate(180deg) scale(0.9);
 }
-
 
 /* ===========================
    CONTEÚDO PRINCIPAL
 =========================== */
 .main {
   position: relative;
-  left: 260px;
-  width: calc(100% - 260px);
+  left: 280px;
+  width: calc(100% - 280px);
   min-height: 100vh;
+  margin-top: 70px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #fff;
+  background: transparent;
   padding: 40px;
-  transition: all 0.5s ease;
+  transition: all 0.4s ease;
+}
+
+.sidebar.close ~ .main {
+  left: 0;
+  width: 100%;
 }
 
 .main h1 {
-  color: black;
+  color: #0077B6;
   font-size: 40px;
   text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* ===========================
-   LOGO CENTRAL
+   DESCRIÇÃO INICIAL
 =========================== */
-.logo2 {
-  position: absolute;
-  top: 50%;
-  left: 45%;
+.descricao-inicial {
+  text-align: center;
+  max-width: 800px;
+  margin: auto;
+  padding: 40px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 169, 165, 0.15);
+  border-top: 4px solid #00A9A5;
+  animation: fadeInUp 0.6s ease;
 }
 
-.logo2 img {
-  height: 75px;
-  width: auto;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.descricao-inicial h1 {
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.descricao-inicial p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 15px;
 }
 
 /* ===========================
@@ -153,90 +258,111 @@ body {
   flex-direction: row;
   height: 100%;
   width: 100%;
-}
-
-.planta-img {
-  width: 100%;
-  height: auto;
-  max-height: 90vh;
-  object-fit: contain;
-  border-radius: 10px;
-}
-
-.seta {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-  padding: 10px 15px;
-  border-radius: 50%;
-  transition: background-color 0.3s;
-}
-
-.seta:hover {
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-.seta-esquerda {
-  left: 20px;
-}
-
-.seta-direita {
-  right: 20px;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 169, 165, 0.15);
+  border-top: 4px solid #00A9A5;
 }
 
 .planta-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 90%;
+}
+
+.planta-img {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 15px;
+  box-shadow: 0 5px 25px rgba(0, 119, 182, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.planta-img:hover {
+  transform: scale(1.02);
 }
 
 .andar-texto {
-  margin-top: 10px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #333;
+  margin-top: 20px;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #0077B6;
+  padding: 10px 30px;
+  background: linear-gradient(135deg, rgba(0, 169, 165, 0.1) 0%, rgba(0, 119, 182, 0.1) 100%);
+  border-radius: 30px;
+  border: 2px solid #00A9A5;
+}
+
+/* Setas de navegação */
+.seta {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 15px 20px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(0, 169, 165, 0.4);
+  z-index: 10;
+}
+
+.seta:hover {
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 8px 30px rgba(0, 169, 165, 0.6);
+  background: linear-gradient(135deg, #2D6A4F 0%, #00A9A5 100%);
+}
+
+.seta:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.seta-esquerda {
+  left: 30px;
+}
+
+.seta-direita {
+  right: 30px;
 }
 
 /* ===========================
-   SECÇÕES INTERNAS (texto, formulários, etc)
+   SECÇÕES INTERNAS
 =========================== */
-.descricao-inicial {
-  text-align: center;
-  max-width: 800px;
-  margin: auto;
-  color: #333;
-}
-
-.descricao-inicial h1 {
-  margin-bottom: 15px;
-  font-size: 2.2rem;
-}
-
-.descricao-inicial p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
-
 .secao {
   text-align: center;
   padding: 40px;
   width: 100%;
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 169, 165, 0.15);
+  border-top: 4px solid #00A9A5;
+  animation: fadeInUp 0.6s ease;
 }
 
 .secao h2 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-  color: #333;
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  color: #0077B6;
+  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .secao p {
-  color: #555;
+  color: #666;
   font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
 }
 
 /* ===========================
@@ -246,58 +372,166 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 30px;
+  gap: 15px;
 }
 
 .form-reserva label {
-  margin-top: 10px;
   font-weight: 600;
-  color: #333;
+  color: #0077B6;
+  font-size: 1rem;
+  align-self: flex-start;
+  margin-left: 20%;
 }
 
 .form-reserva input {
-  padding: 8px;
-  margin: 5px 0;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 2px solid #e0e0e0;
   width: 60%;
-  max-width: 300px;
+  max-width: 400px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.form-reserva input:focus {
+  outline: none;
+  border-color: #00A9A5;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(0, 169, 165, 0.1);
+  transform: translateY(-2px);
 }
 
 .form-reserva button {
-  margin-top: 15px;
-  padding: 10px 20px;
+  margin-top: 20px;
+  padding: 14px 40px;
   border: none;
-  border-radius: 8px;
-  background-color: #4d6378;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
   color: white;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 20px rgba(0, 169, 165, 0.3);
 }
 
 .form-reserva button:hover {
-  background-color: #3d5163;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 169, 165, 0.5);
+  background: linear-gradient(135deg, #2D6A4F 0%, #00A9A5 100%);
+}
+
+.form-reserva button:active {
+  transform: translateY(-1px);
+}
+
+/* ===========================
+   LOGO CENTRAL (para segurança)
+=========================== */
+.logo2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.logo2 img {
+  height: 120px;
+  width: auto;
+  filter: drop-shadow(0 10px 30px rgba(0, 169, 165, 0.3));
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
 /* ===========================
    RESPONSIVIDADE
 =========================== */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .sidebar {
-    width: 200px;
+    width: 240px;
   }
 
   .navbar {
-    left: 200px;
-    width: calc(100% - 200px);
+    left: 240px;
+    width: calc(100% - 240px);
   }
 
   .main {
-    left: 200px;
-    width: calc(100% - 200px);
+    left: 240px;
+    width: calc(100% - 240px);
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 0;
+  }
+
+  .navbar {
+    left: 0;
+    width: 100%;
+  }
+
+  .main {
+    left: 0;
+    width: 100%;
+    padding: 20px;
   }
 
   .descricao-inicial h1 {
+    font-size: 2rem;
+  }
+
+  .descricao-inicial {
+    padding: 25px;
+  }
+
+  .seta {
+    padding: 12px 16px;
+    font-size: 1.5rem;
+  }
+
+  .seta-esquerda {
+    left: 10px;
+  }
+
+  .seta-direita {
+    right: 10px;
+  }
+
+  .form-reserva input {
+    width: 80%;
+  }
+
+  .form-reserva label {
+    margin-left: 10%;
+  }
+}
+
+@media (max-width: 480px) {
+  .descricao-inicial h1 {
+    font-size: 1.6rem;
+  }
+
+  .descricao-inicial p {
+    font-size: 1rem;
+  }
+
+  .secao h2 {
     font-size: 1.8rem;
+  }
+
+  .andar-texto {
+    font-size: 1.3rem;
   }
 }
