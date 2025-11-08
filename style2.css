@@ -9,7 +9,7 @@
 }
 
 body {
-  background: #f5f7fa;
+  background: #1a1d23;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -21,11 +21,12 @@ body {
   position: fixed;
   height: 100%;
   width: 280px;
-  background: linear-gradient(180deg, #0077B6 0%, #00A9A5 100%);
+  background: linear-gradient(180deg, #0f1419 0%, #1a1d23 100%);
   padding: 0;
   z-index: 99;
-  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5);
   transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .sidebar.close {
@@ -34,7 +35,7 @@ body {
 }
 
 .sidebar a {
-  color: white;
+  color: #e2e8f0;
   text-decoration: none;
 }
 
@@ -44,14 +45,14 @@ body {
   align-items: center;
   justify-content: center;
   padding: 25px 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .logo1 img {
   height: 60px;
   width: auto;
-  filter: brightness(1.1);
+  filter: brightness(1.2);
   transition: transform 0.3s ease;
 }
 
@@ -74,17 +75,17 @@ body {
 }
 
 .menu-content::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 10px;
 }
 
 .menu-content::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
 }
 
 .menu-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .menu-content ul {
@@ -116,15 +117,16 @@ body {
   top: 0;
   height: 100%;
   width: 4px;
-  background: linear-gradient(180deg, #2D6A4F, #52b788);
+  background: linear-gradient(180deg, #3b82f6, #2563eb);
   transform: scaleY(0);
   transition: transform 0.3s ease;
 }
 
 .item a:hover {
-  background: rgba(45, 106, 79, 0.25);
+  background: rgba(59, 130, 246, 0.1);
   transform: translateX(5px);
   padding-left: 25px;
+  color: #60a5fa;
 }
 
 .item a:hover::before {
@@ -145,12 +147,13 @@ body {
   width: calc(100% - 280px);
   height: 70px;
   padding: 0 30px;
-  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   transition: all 0.4s ease;
   z-index: 98;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .sidebar.close ~ .navbar {
@@ -160,7 +163,7 @@ body {
 
 #sidebar-close {
   font-size: 26px;
-  color: white;
+  color: #e2e8f0;
   cursor: pointer;
   padding: 10px;
   border-radius: 10px;
@@ -168,7 +171,8 @@ body {
 }
 
 #sidebar-close:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
   transform: rotate(180deg);
 }
 
@@ -199,10 +203,10 @@ body {
 }
 
 .main h1 {
-  color: #0077B6;
+  color: #e2e8f0;
   font-size: 40px;
   text-align: center;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* ===========================
@@ -213,10 +217,11 @@ body {
   max-width: 800px;
   margin: auto;
   padding: 40px;
-  background: white;
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 169, 165, 0.15);
-  border-top: 4px solid #00A9A5;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 3px solid #3b82f6;
   animation: fadeInUp 0.6s ease;
 }
 
@@ -234,7 +239,7 @@ body {
 .descricao-inicial h1 {
   margin-bottom: 20px;
   font-size: 2.5rem;
-  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -243,7 +248,7 @@ body {
 .descricao-inicial p {
   font-size: 1.1rem;
   line-height: 1.8;
-  color: #555;
+  color: #cbd5e1;
   margin-bottom: 15px;
 }
 
@@ -258,11 +263,12 @@ body {
   flex-direction: row;
   height: 100%;
   width: 100%;
-  background: white;
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
   border-radius: 20px;
   padding: 30px;
-  box-shadow: 0 10px 40px rgba(0, 169, 165, 0.15);
-  border-top: 4px solid #00A9A5;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 3px solid #3b82f6;
 }
 
 .planta-wrapper {
@@ -278,8 +284,9 @@ body {
   max-height: 70vh;
   object-fit: contain;
   border-radius: 15px;
-  box-shadow: 0 5px 25px rgba(0, 119, 182, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .planta-img:hover {
@@ -290,11 +297,12 @@ body {
   margin-top: 20px;
   font-size: 1.8rem;
   font-weight: 600;
-  color: #0077B6;
-  padding: 10px 30px;
-  background: linear-gradient(135deg, rgba(0, 169, 165, 0.1) 0%, rgba(0, 119, 182, 0.1) 100%);
+  color: #e2e8f0;
+  padding: 12px 35px;
+  background: rgba(59, 130, 246, 0.15);
   border-radius: 30px;
-  border: 2px solid #00A9A5;
+  border: 2px solid #3b82f6;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
 /* Setas de navegação */
@@ -302,7 +310,7 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   border: none;
   font-size: 2rem;
@@ -310,14 +318,14 @@ body {
   padding: 15px 20px;
   border-radius: 50%;
   transition: all 0.3s ease;
-  box-shadow: 0 5px 20px rgba(0, 169, 165, 0.4);
+  box-shadow: 0 5px 25px rgba(59, 130, 246, 0.4);
   z-index: 10;
 }
 
 .seta:hover {
   transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 8px 30px rgba(0, 169, 165, 0.6);
-  background: linear-gradient(135deg, #2D6A4F 0%, #00A9A5 100%);
+  box-shadow: 0 8px 35px rgba(59, 130, 246, 0.6);
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
 }
 
 .seta:active {
@@ -341,25 +349,26 @@ body {
   width: 100%;
   max-width: 900px;
   margin: auto;
-  background: white;
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 169, 165, 0.15);
-  border-top: 4px solid #00A9A5;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 3px solid #3b82f6;
   animation: fadeInUp 0.6s ease;
 }
 
 .secao h2 {
   font-size: 2.2rem;
   margin-bottom: 15px;
-  color: #0077B6;
-  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
+  color: #e2e8f0;
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .secao p {
-  color: #666;
+  color: #cbd5e1;
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 20px;
@@ -378,7 +387,7 @@ body {
 
 .form-reserva label {
   font-weight: 600;
-  color: #0077B6;
+  color: #e2e8f0;
   font-size: 1rem;
   align-self: flex-start;
   margin-left: 20%;
@@ -387,20 +396,25 @@ body {
 .form-reserva input {
   padding: 14px 20px;
   border-radius: 12px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid rgba(255, 255, 255, 0.1);
   width: 60%;
   max-width: 400px;
   font-size: 15px;
   transition: all 0.3s ease;
-  background: #f8f9fa;
+  background: rgba(30, 41, 59, 0.5);
+  color: #e2e8f0;
 }
 
 .form-reserva input:focus {
   outline: none;
-  border-color: #00A9A5;
-  background: white;
-  box-shadow: 0 0 0 4px rgba(0, 169, 165, 0.1);
+  border-color: #3b82f6;
+  background: rgba(30, 41, 59, 0.8);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
   transform: translateY(-2px);
+}
+
+.form-reserva input::placeholder {
+  color: #94a3b8;
 }
 
 .form-reserva button {
@@ -408,19 +422,19 @@ body {
   padding: 14px 40px;
   border: none;
   border-radius: 12px;
-  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 5px 20px rgba(0, 169, 165, 0.3);
+  box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
 }
 
 .form-reserva button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 169, 165, 0.5);
-  background: linear-gradient(135deg, #2D6A4F 0%, #00A9A5 100%);
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.6);
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
 }
 
 .form-reserva button:active {
@@ -440,7 +454,7 @@ body {
 .logo2 img {
   height: 120px;
   width: auto;
-  filter: drop-shadow(0 10px 30px rgba(0, 169, 165, 0.3));
+  filter: drop-shadow(0 15px 40px rgba(59, 130, 246, 0.4));
   animation: float 3s ease-in-out infinite;
 }
 

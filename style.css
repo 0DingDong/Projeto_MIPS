@@ -112,7 +112,7 @@ form {
   padding: 50px 40px;
   border-radius: 25px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  border-top: 5px solid #2D6A4F;
+  border-top: 5px solid #357a8a;
   animation: fadeInUp 0.8s ease;
   position: relative;
   overflow: hidden;
@@ -137,7 +137,7 @@ form::before {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(45deg, transparent, rgba(0, 169, 165, 0.1), transparent);
+  background: linear-gradient(45deg, transparent, rgba(74, 144, 164, 0.08), transparent);
   transform: rotate(45deg);
   animation: shine 3s infinite;
 }
@@ -173,10 +173,10 @@ form::before {
 
 .input-box .input-field:focus {
   outline: none;
-  border-color: #00A9A5;
+  border-color: #4a90a4;
   background: white;
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(0, 169, 165, 0.3);
+  box-shadow: 0 5px 20px rgba(74, 144, 164, 0.25);
 }
 
 .input-box .input-field::placeholder {
@@ -191,7 +191,7 @@ form::before {
 
 /* Animação ao digitar */
 .input-box .input-field:not(:placeholder-shown) {
-  border-color: #00A9A5;
+  border-color: #4a90a4;
   background: white;
 }
 
@@ -204,7 +204,7 @@ form::before {
 .submit-btn {
   width: 100%;
   height: 60px;
-  background: linear-gradient(135deg, #00A9A5 0%, #0077B6 100%);
+  background: linear-gradient(135deg, #4a90a4 0%, #357a8a 100%);
   color: white;
   border: none;
   border-radius: 15px;
@@ -212,7 +212,7 @@ form::before {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 5px 20px rgba(0, 169, 165, 0.4);
+  box-shadow: 0 4px 15px rgba(74, 144, 164, 0.35);
   position: relative;
   overflow: hidden;
   z-index: 1;
@@ -225,7 +225,7 @@ form::before {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #2D6A4F 0%, #00A9A5 100%);
+  background: linear-gradient(135deg, #357a8a 0%, #2d6a75 100%);
   transition: left 0.3s ease;
   z-index: -1;
 }
@@ -236,12 +236,12 @@ form::before {
 
 .submit-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 169, 165, 0.6);
+  box-shadow: 0 6px 25px rgba(74, 144, 164, 0.5);
 }
 
 .submit-btn:active {
   transform: translateY(-1px);
-  box-shadow: 0 5px 20px rgba(0, 169, 165, 0.4);
+  box-shadow: 0 4px 15px rgba(74, 144, 164, 0.35);
 }
 
 /* Link "Recuperar senha" */
@@ -259,7 +259,7 @@ form::after {
 }
 
 form:hover::after {
-  color: #00A9A5;
+  color: #4a90a4;
 }
 
 /* Responsividade */
