@@ -299,10 +299,9 @@ body {
   font-weight: 600;
   color: #e2e8f0;
   padding: 12px 35px;
-  background: rgba(59, 130, 246, 0.15);
+  background: rgba(51, 65, 85, 0.3);
   border-radius: 30px;
-  border: 2px solid #3b82f6;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Setas de navegação */
@@ -310,26 +309,23 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: #334155;
-  color: white;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
   border: none;
-  font-size: 2rem;
+  font-size: 3rem;
   cursor: pointer;
-  padding: 15px 20px;
-  border-radius: 50%;
+  padding: 10px;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   z-index: 10;
 }
 
 .seta:hover {
-  transform: translateY(-50%) scale(1.05);
-  background: #475569;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-50%) scale(1.2);
 }
 
 .seta:active {
-  transform: translateY(-50%) scale(0.98);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .seta-esquerda {
