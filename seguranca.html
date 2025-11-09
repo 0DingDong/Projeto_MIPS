@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style2.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
   </head>
-  <body>
+  <body data-page="seguranca">
     <nav class="sidebar">
       <div class="logo1">
         <img src="logo_mips.png" alt="Logo MIPS">
@@ -17,15 +17,15 @@
       <div class="menu-content">
         <ul>
           <li class="item">
-            <a href="#">Conta</a>
+            <a href="#" id="detalhes-conta">Detalhes da Conta</a>
           </li>
 
           <li class="item">
-            <a href="#">Procurar</a>
+            <a href="#" id="procurar">Procurar</a>
           </li>
 
           <li class="item">
-            <a href="#">Ver Mapa</a>
+            <a href="#" id="verMapa">Ver Mapa</a>
           </li>
 
           <li class="item">
@@ -43,10 +43,14 @@
       <i class="fa-solid fa-bars" id="sidebar-close"></i>
     </nav>
 
-    <main class="main">
-      <div class="logo2">
-        <img src="logo_mips.png" alt="Logo MIPS">
-      </div> 
+    <main class="main" id="conteudo">
+      <div id="account-details" class="secao" style="display:none;"></div>
+      <div class="descricao-inicial">
+        <h1>Bem-vindo ao sistema MIPS</h1>
+        <p>Este sistema foi desenvolvido para auxiliar na gestão das salas do IPS. 
+        Aqui, a equipa de segurança pode verificar o estado da porta das salas e receber alertas quando são abertas.</p>
+        <p>Use o menu à esquerda para navegar entre as funcionalidades.</p>
+      </div>
     </main>
 
     <script src="script.js"></script>

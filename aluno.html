@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style2.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
   </head>
-  <body>
+  <body data-page="aluno">
     <nav class="sidebar">
       <div class="logo1">
         <img src="logo_mips.png" alt="Logo MIPS">
@@ -17,15 +17,15 @@
       <div class="menu-content">
         <ul>
           <li class="item">
-            <a href="#">Conta</a>
+            <a href="#" id="detalhes-conta">Detalhes da Conta</a>
           </li>
 
           <li class="item">
-            <a href="#">Procurar</a>
+            <a href="#" id="procurar">Procurar</a>
           </li>
 
           <li class="item">
-            <a href="#">Ver Mapa</a>
+            <a href="#" id="verMapa">Ver Mapa</a>
           </li>
 
           <li class="item">
@@ -43,16 +43,13 @@
       <i class="fa-solid fa-bars" id="sidebar-close"></i>
     </nav>
 
-    <main class="main">
-      <div class="planta-container">
-        <button class="seta seta-esquerda" id="anterior">&#10094;</button>
-    
-        <div class="planta-wrapper">
-          <img id="plantaImagem" src="planta2.png" alt="Planta Andar 2" class="planta-img">
-          <div id="andarTexto" class="andar-texto">Andar 2</div>
-        </div>
-    
-        <button class="seta seta-direita" id="proximo">&#10095;</button>
+    <main class="main" id="conteudo">
+      <div id="account-details" class="secao" style="display:none;"></div>
+      <div class="descricao-inicial">
+        <h1>Bem-vindo ao sistema MIPS</h1>
+        <p>Este sistema foi desenvolvido para auxiliar na gestão das salas do IPS. 
+        Aqui, os alunos podem visualizar o mapa das salas, consultar horários e verificar a disponibilidade dos espaços.</p>
+        <p>Use o menu à esquerda para navegar entre as funcionalidades.</p>
       </div>
     </main>
 

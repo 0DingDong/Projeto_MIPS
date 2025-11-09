@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
   </head>
 
-  <body>
+  <body data-page="professor">
     <!-- Sidebar -->
     <nav class="sidebar">
       <div class="logo1">
@@ -18,11 +18,11 @@
        
       <div class="menu-content">
         <ul>
-          <li class="item"><a href="#" id="conta">Conta</a></li>
+          <li class="item"><a href="#" id="detalhes-conta">Detalhes da Conta</a></li>
           <li class="item"><a href="#" id="procurar">Procurar</a></li>
           <li class="item"><a href="#" id="verMapa">Ver Mapa</a></li>
           <li class="item"><a href="#" id="salasLivres">Salas Livres</a></li>
-          <li class="item"><a href="#" id="pedirSala">Pedir Sala</a></li>
+          <li class="item"><a href="#" id="pedirSala">Reservar Sala</a></li>
           <li class="item"><a href="login.html" id="sair">Sair</a></li>
         </ul>
       </div>
@@ -35,6 +35,7 @@
 
     <!-- Conteúdo principal -->
     <main class="main" id="conteudo">
+      <div id="account-details" class="secao" style="display:none;"></div>
       <div class="descricao-inicial">
         <h1>Bem-vindo ao sistema MIPS</h1>
         <p>Este sistema foi desenvolvido para auxiliar na gestão das salas do IPS. 
