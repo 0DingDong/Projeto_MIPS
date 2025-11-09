@@ -1,0 +1,250 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Logo IPS (canto superior esquerdo) */
+.logo1 {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  animation: fadeInLeft 0.8s ease;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.logo1 img {
+  height: 170px;
+  width: auto;
+  filter: drop-shadow(0 5px 20px rgba(0, 0, 0, 0.5));
+  transition: transform 0.3s ease;
+}
+
+.logo1 img:hover {
+  transform: scale(1.05);
+}
+
+/* Logo MIPS (centrado no topo) */
+.logo2 {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: fadeInDown 0.8s ease;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.logo2 img {
+  height: 90px;
+  width: auto;
+  filter: brightness(1.2) drop-shadow(0 5px 20px rgba(0, 0, 0, 0.5));
+  transition: transform 0.3s ease;
+}
+
+.logo2 img:hover {
+  transform: scale(1.05);
+}
+
+/* Caixa de login centrada */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+  backdrop-filter: blur(10px);
+  margin-top: 180px;
+  width: 100%;
+  max-width: 450px;
+  padding: 50px 40px;
+  border-radius: 25px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  animation: fadeInUp 0.8s ease;
+  position: relative;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Campos de texto */
+.input-box {
+  width: 100%;
+  margin-bottom: 25px;
+  position: relative;
+}
+
+.input-box .input-field {
+  width: 100%;
+  height: 60px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  background: rgba(30, 41, 59, 0.5);
+  padding: 0 25px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  color: #e2e8f0;
+}
+
+.input-box .input-field:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: rgba(30, 41, 59, 0.8);
+  transform: translateY(-2px);
+}
+
+.input-box .input-field::placeholder {
+  color: #94a3b8;
+  transition: all 0.3s ease;
+}
+
+.input-box .input-field:focus::placeholder {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+/* Animação ao digitar */
+.input-box .input-field:not(:placeholder-shown) {
+  border-color: #3b82f6;
+  background: rgba(30, 41, 59, 0.8);
+}
+
+/* Botão */
+.input-submit {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.submit-btn {
+  width: 100%;
+  height: 60px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+/* Link "Recuperar senha" */
+form::after {
+  content: "Esqueceu-se da senha? Recuperar senha";
+  display: block;
+  text-align: center;
+  margin-top: 25px;
+  font-size: 14px;
+  color: #94a3b8;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+form:hover::after {
+  color: #60a5fa;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .logo1 {
+    top: 20px;
+    left: 20px;
+  }
+
+  .logo1 img {
+    height: 120px;
+  }
+
+  .logo2 {
+    top: 40px;
+  }
+
+  .logo2 img {
+    height: 70px;
+  }
+
+  form {
+    margin-top: 150px;
+    max-width: 90%;
+    padding: 40px 30px;
+  }
+
+  .input-box .input-field,
+  .submit-btn {
+    height: 55px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo1 img {
+    height: 100px;
+  }
+
+  .logo2 img {
+    height: 60px;
+  }
+
+  form {
+    padding: 35px 25px;
+    margin-top: 130px;
+  }
+
+  .input-box .input-field,
+  .submit-btn {
+    height: 50px;
+    font-size: 14px;
+  }
+}
