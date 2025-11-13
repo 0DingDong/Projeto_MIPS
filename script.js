@@ -104,8 +104,19 @@ if (salasLivres && conteudo) {
     const contentEl = document.createElement('div');
     contentEl.className = 'secao';
     contentEl.innerHTML = `
-      <h2>Salas Livres</h2>
-      <p>Aqui será exibida a lista de salas atualmente disponíveis.</p>
+      <h2>Histórico de Reservas</h2>
+      <p>Aqui será exibido o histórico de reservas realizadas — quem reservou, sala, data e hora. Podes cancelar reservas através da coluna "Ações".</p>
+      <div class="reserves-table">
+        <table>
+          <thead>
+            <tr><th>Sala</th><th>Quem</th><th>Data</th><th>Hora</th><th>Ações</th></tr>
+          </thead>
+          <tbody>
+            <tr data-id="r1"><td>B2.04</td><td>João Silva</td><td>2025-11-12</td><td>14:00</td><td><button class="cancel-reservation">Cancelar</button></td></tr>
+            <tr data-id="r2"><td>A1.01</td><td>Maria Costa</td><td>2025-11-11</td><td>09:00</td><td><button class="cancel-reservation">Cancelar</button></td></tr>
+          </tbody>
+        </table>
+      </div>
     `;
     hideAccountDetailsAndShowContent(contentEl);
   });
@@ -222,3 +233,29 @@ if (detalhesConta) {
     toggleAccountDetails(html);
   });
 }
+
+// Delegate handler for cancel reservation buttons (mock DELETE)
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest && e.target.closest('.cancel-reservation');
+  if (!btn) return;
+
+  // confirm cancellation
+  if (!confirm('Tens a certeza que queres cancelar esta reserva?')) return;
+
+  // find the row and reservation id
+  const row = btn.closest('tr');
+  const resId = row ? row.dataset.id : null;
+
+  // UI feedback while processing
+  btn.disabled = true;
+  const oldText = btn.textContent;
+  btn.textContent = 'Cancelando...';
+
+  // Mock backend call (replace with real fetch when API available)
+  // Example: fetch(`/api/reservations/${resId}`, { method: 'DELETE' })
+  setTimeout(() => {
+    // simulate success
+    if (row) row.remove();
+    alert('Reserva cancelada com sucesso.');
+  }, 800);
+});
