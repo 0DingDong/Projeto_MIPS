@@ -79,7 +79,6 @@ function toggleAccountDetails(pageHtml) {
     // show details, hide other content
     ad.style.display = 'block';
     hideSiblings(mainEl, 'account-details');
-    ad.scrollIntoView({ behavior: 'smooth' });
   } else {
     // hide details, restore other content
     ad.style.display = 'none';
@@ -218,7 +217,7 @@ if (detalhesConta) {
     let html = '';
     if (page === 'aluno' || (typeof page === 'string' && page.toLowerCase().includes('aluno'))) {
       html = `<h2>Detalhes da Conta</h2>
-              <p>Como aluno, pode pesquisar salas e visualizar o mapa interativo para localizar espaços.</p>`;
+              <p>Como aluno, pode pesquisar salas e visualizar o mapa interativo para localizar salas no IPS.</p>`;
     } else if (page === 'professor' || (typeof page === 'string' && page.toLowerCase().includes('professor'))) {
       html = `<h2>Detalhes da Conta</h2>
               <p>Como professor, pode verificar salas livres, efetuar e gerir reservas, e consultar relatórios das suas reservas e pedidos.</p>`;
