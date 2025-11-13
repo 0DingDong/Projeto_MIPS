@@ -133,6 +133,20 @@ if (pedirSala && conteudo) {
   });
 }
 
+// Handler para 'Alertas' (somente disponível em página de segurança)
+const alertas = document.getElementById('alertas');
+if (alertas && conteudo) {
+  alertas.addEventListener('click', () => {
+    const contentEl = document.createElement('div');
+    contentEl.className = 'secao';
+    contentEl.innerHTML = `
+      <h2>Alertas</h2>
+      <p>Aqui serão exibidos os alertas relevantes para a equipa de segurança.</p>
+    `;
+    hideAccountDetailsAndShowContent(contentEl);
+  });
+}
+
 carregarMapa();
 
 // Handler para 'Ver Mapa' — injeta o mapa preservando #account-details quando existir
@@ -193,7 +207,7 @@ if (detalhesConta) {
     let html = '';
     if (page === 'aluno' || (typeof page === 'string' && page.toLowerCase().includes('aluno'))) {
       html = `<h2>Detalhes da Conta</h2>
-              <p>Como aluno, pode procurar salas, ver mapas e solicitar reservas (sujeito a aprovação). Pode também consultar as suas reservas e informações pessoais.</p>`;
+              <p>Como aluno, pode pesquisar salas e visualizar o mapa interativo para localizar espaços.</p>`;
     } else if (page === 'professor' || (typeof page === 'string' && page.toLowerCase().includes('professor'))) {
       html = `<h2>Detalhes da Conta</h2>
               <p>Como professor, pode verificar salas livres, efetuar e gerir reservas, e consultar relatórios das suas reservas e pedidos.</p>`;
