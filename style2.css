@@ -147,44 +147,52 @@ body {
 /* ===========================
    NAVBAR (BARRA SUPERIOR)
 =========================== */
+
 .navbar {
   position: fixed;
   top: 0;
-  left: 280px;
-  width: calc(100% - 280px);
+  left: 0;
+  width: 100%;
   height: 70px;
   padding: 0 30px;
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   transition: all 0.4s ease;
   z-index: 98;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.sidebar.close ~ .navbar {
-  left: 0;
-  width: 100%;
-}
-
 #sidebar-close {
-  font-size: 26px;
+  display: none; /* não usamos botão do sidebar no header */
+}
+
+/* Header menu (substitui a sidebar) */
+.logo-header {
+  height: 48px;
+}
+
+.nav-menu ul {
+  list-style: none;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.nav-menu a {
   color: #e2e8f0;
-  cursor: pointer;
-  padding: 10px;
-  border-radius: 10px;
-  transition: all 0.3s ease;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.15s ease;
 }
 
-#sidebar-close:hover {
-  background: rgba(59, 130, 246, 0.2);
-  color: #60a5fa;
-  transform: rotate(180deg);
-}
-
-#sidebar-close:active {
-  transform: rotate(180deg) scale(0.9);
+.nav-menu a:hover {
+  background: rgba(255,255,255,0.04);
+  transform: translateY(-2px);
 }
 
 /* ===========================
@@ -192,8 +200,8 @@ body {
 =========================== */
 .main {
   position: relative;
-  left: 280px;
-  width: calc(100% - 280px);
+  left: 0;
+  width: 100%;
   min-height: 100vh;
   margin-top: 70px;
   display: flex;
@@ -202,11 +210,6 @@ body {
   background: transparent;
   padding: 40px;
   transition: all 0.4s ease;
-}
-
-.sidebar.close ~ .main {
-  left: 0;
-  width: 100%;
 }
 
 .main h1 {

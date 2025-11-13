@@ -5,9 +5,7 @@ if (sidebarClose && sidebar) {
   sidebarClose.addEventListener("click", () => sidebar.classList.toggle("close"));
 }
 
-carregarMapa();
-
-// Elementos do menu
+// Elementos do menu (definir cedo para evitar referências antes da inicialização)
 const conteudo = document.getElementById("conteudo");
 const verMapa = document.getElementById("verMapa");
 const salasLivres = document.getElementById("salasLivres");
@@ -17,50 +15,144 @@ const conta = document.getElementById("conta");
 const detalhesConta = document.getElementById("detalhes-conta");
 const accountDetails = document.getElementById("account-details");
 
-if (verMapa && conteudo) {
-  verMapa.addEventListener("click", () => {
-    conteudo.innerHTML = `
-      <div class="planta-container">
-        <button class="seta seta-esquerda" id="anterior">&#10094;</button>
-        <div class="planta-wrapper">
-          <img id="plantaImagem" src="planta2.png" alt="Planta Andar 2" class="planta-img">
-          <div id="andarTexto" class="andar-texto">Andar 2</div>
-        </div>
-        <button class="seta seta-direita" id="proximo">&#10095;</button>
-      </div>
-    `;
-    carregarMapa();
+// Helpers para gerir #account-details e o conteúdo da <main>
+function ensureAccountDetails() {
+  // dedupe any accidental duplicates
+  const allAds = document.querySelectorAll('#account-details');
+  if (allAds && allAds.length > 1) {
+    // keep the first, remove the rest
+    for (let i = 1; i < allAds.length; i++) allAds[i].remove();
+  }
+  let ad = document.getElementById('account-details');
+  const mainEl = document.querySelector('.main');
+  if (!mainEl) return null;
+  if (!ad) {
+    ad = document.createElement('div');
+    ad.id = 'account-details';
+    ad.className = 'secao';
+    ad.style.display = 'none';
+    mainEl.insertBefore(ad, mainEl.firstChild);
+  }
+  return ad;
+}
+
+// snapshot to restore original main content when toggling details
+let originalMainHTML = null;
+
+function hideSiblings(mainEl, keepId = 'account-details') {
+  Array.from(mainEl.children).forEach((child) => {
+    if (child.id !== keepId) child.style.display = 'none';
   });
 }
 
+function showSiblings(mainEl, keepId = 'account-details') {
+  Array.from(mainEl.children).forEach((child) => {
+    if (child.id !== keepId) child.style.display = '';
+  });
+}
+
+function hideAccountDetailsAndShowContent(contentEl) {
+  const mainEl = document.querySelector('.main');
+  if (!mainEl) return;
+  const ad = ensureAccountDetails();
+  if (ad) ad.style.display = 'none';
+
+  // snapshot original content (only the first time)
+  if (originalMainHTML === null) originalMainHTML = mainEl.innerHTML;
+
+  // remove existing content children except account-details
+  Array.from(mainEl.children).forEach((child) => {
+    if (child.id !== 'account-details') mainEl.removeChild(child);
+  });
+  mainEl.appendChild(contentEl);
+}
+
+function toggleAccountDetails(pageHtml) {
+  const mainEl = document.querySelector('.main');
+  if (!mainEl) return;
+  const ad = ensureAccountDetails();
+  if (!ad) return;
+
+  const isHidden = (ad.style.display === 'none' || getComputedStyle(ad).display === 'none');
+  ad.innerHTML = pageHtml;
+  if (isHidden) {
+    // show details, hide other content
+    ad.style.display = 'block';
+    hideSiblings(mainEl, 'account-details');
+    ad.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    // hide details, restore other content
+    ad.style.display = 'none';
+    // if we have a snapshot of original content, restore it
+    if (originalMainHTML !== null) {
+      mainEl.innerHTML = originalMainHTML;
+      // ensure account-details exists and is hidden after restore
+      const ad2 = ensureAccountDetails();
+      if (ad2) ad2.style.display = 'none';
+      // re-initialize map controls if map exists in restored content
+      carregarMapa();
+    } else {
+      showSiblings(mainEl, 'account-details');
+    }
+  }
+}
+
+// Handler para 'Salas Livres' — preserva #account-details
 if (salasLivres && conteudo) {
   salasLivres.addEventListener("click", () => {
-    conteudo.innerHTML = `
-      <div class="secao">
-        <h2>Salas Livres</h2>
-        <p>Aqui será exibida a lista de salas atualmente disponíveis.</p>
-      </div>
+    // construir conteúdo como elemento DOM e preservar #account-details
+    const contentEl = document.createElement('div');
+    contentEl.className = 'secao';
+    contentEl.innerHTML = `
+      <h2>Salas Livres</h2>
+      <p>Aqui será exibida a lista de salas atualmente disponíveis.</p>
     `;
+    hideAccountDetailsAndShowContent(contentEl);
   });
 }
 
+// Handler para 'Reservar Sala' — preserva #account-details
 if (pedirSala && conteudo) {
   pedirSala.addEventListener("click", () => {
-    conteudo.innerHTML = `
-      <div class="secao">
-        <h2>Reservar Sala</h2>
-        <p>Escolha a sala e o horário pretendido para realizar uma reserva.</p>
-        <form class="form-reserva">
-          <label for="sala">Sala:</label>
-          <input type="text" id="sala" placeholder="Ex: B2.04">
-          <label for="data">Data:</label>
-          <input type="date" id="data">
-          <label for="hora">Hora:</label>
-          <input type="time" id="hora">
-          <button type="submit">Reservar</button>
-        </form>
-      </div>
+    const contentEl = document.createElement('div');
+    contentEl.className = 'secao';
+    contentEl.innerHTML = `
+      <h2>Reservar Sala</h2>
+      <p>Escolha a sala e o horário pretendido para realizar uma reserva.</p>
+      <form class="form-reserva">
+        <label for="sala">Sala:</label>
+        <input type="text" id="sala" placeholder="Ex: B2.04">
+        <label for="data">Data:</label>
+        <input type="date" id="data">
+        <label for="hora">Hora:</label>
+        <input type="time" id="hora">
+        <button type="submit">Reservar</button>
+      </form>
     `;
+    hideAccountDetailsAndShowContent(contentEl);
+  });
+}
+
+carregarMapa();
+
+// Handler para 'Ver Mapa' — injeta o mapa preservando #account-details quando existir
+if (verMapa && conteudo) {
+  verMapa.addEventListener("click", () => {
+    // construir o mapa como elemento DOM
+    const mapEl = document.createElement('div');
+    mapEl.className = 'planta-container';
+    mapEl.innerHTML = `
+      <button class="seta seta-esquerda" id="anterior">&#10094;</button>
+      <div class="planta-wrapper">
+        <img id="plantaImagem" src="planta2.png" alt="Planta Andar 2" class="planta-img">
+        <div id="andarTexto" class="andar-texto">Andar 2</div>
+      </div>
+      <button class="seta seta-direita" id="proximo">&#10095;</button>
+    `;
+
+    // esconder account details e mostrar o mapa
+    hideAccountDetailsAndShowContent(mapEl);
+    carregarMapa();
   });
 }
 
@@ -95,10 +187,6 @@ function carregarMapa() {
 
 // Mostrar detalhes da conta dependendo da página
 if (detalhesConta) {
-  // guardar conteúdo original para fallback
-  const originalConteudo = conteudo ? conteudo.innerHTML : null;
-  const mainEl = document.querySelector('.main');
-
   detalhesConta.addEventListener("click", (e) => {
     e.preventDefault();
     const page = (document.body && document.body.dataset && document.body.dataset.page) ? document.body.dataset.page : (document.title || '').toLowerCase();
@@ -117,33 +205,6 @@ if (detalhesConta) {
               <p>Informações sobre as capacidades de cada tipo de conta no sistema.</p>`;
     }
 
-    if (accountDetails && mainEl) {
-      const isHidden = (accountDetails.style.display === 'none' || getComputedStyle(accountDetails).display === 'none');
-      accountDetails.innerHTML = html;
-      if (isHidden) {
-        // mostrar detalhes e esconder irmãos (conteúdo original)
-        accountDetails.style.display = 'block';
-        Array.from(mainEl.children).forEach((child) => {
-          if (child.id !== 'account-details') child.style.display = 'none';
-        });
-        accountDetails.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        // ocultar detalhes e restaurar irmãos
-        accountDetails.style.display = 'none';
-        Array.from(mainEl.children).forEach((child) => {
-          if (child.id !== 'account-details') child.style.display = '';
-        });
-      }
-    } else if (conteudo) {
-      // fallback: substituir o conteúdo (toggle)
-      const showing = conteudo.dataset.showingDetails === 'true';
-      if (!showing) {
-        conteudo.dataset.showingDetails = 'true';
-        conteudo.innerHTML = `<div class="secao">${html}</div>`;
-      } else {
-        conteudo.dataset.showingDetails = 'false';
-        if (originalConteudo !== null) conteudo.innerHTML = originalConteudo;
-      }
-    }
+    toggleAccountDetails(html);
   });
 }
