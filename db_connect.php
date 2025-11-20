@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root"; // ou o teu utilizador MySQL
-$password = "Sonicminecraft_2007";     // palavra-passe do MySQL
+$password = "";     // palavra-passe do MySQL
 $dbname = "mips";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
