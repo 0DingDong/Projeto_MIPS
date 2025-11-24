@@ -170,6 +170,9 @@ if (verMapa && conteudo) {
       <div class="planta-wrapper">
         <img id="plantaImagem" src="../Img/planta2.png" alt="Planta Andar 2" class="planta-img">
         <div id="andarTexto" class="andar-texto">Andar 2</div>
+
+        <!-- Tooltip -->
+        <div id="tooltip" class="tooltip"></div>
       </div>
       <button class="seta seta-direita" id="proximo">&#10095;</button>
     `;
@@ -190,13 +193,89 @@ function carregarMapa() {
   const andarTexto = document.getElementById("andarTexto");
   const anterior = document.getElementById("anterior");
   const proximo = document.getElementById("proximo");
+  const tooltip = document.getElementById("tooltip");
+
+  const horarios = {
+    F210: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Disponível"],
+    F211: ["09h-10h - Ocupada", "10h-11h - Ocupada", "11h-12h - Disponível"],
+    F212: ["09h-10h - Disponível", "10h-11h - Disponível", "11h-12h - Ocupada"],
+    F212A: ["09h-10h - Ocupada", "10h-11h - Disponível", "11h-12h - Disponível"],
+    F212B: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Ocupada"],
+
+    // Andar 3
+    F311: ["09h-10h - Ocupada", "10h-11h - Disponível", "11h-12h - Disponível"],
+    F313: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Disponível"],
+    F315: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Ocupada"],
+    F317: ["09h-10h - Ocupada", "10h-11h - Ocupada", "11h-12h - Disponível"],
+    F319: ["09h-10h - Disponível", "10h-11h - Disponível", "11h-12h - Ocupada"],
+    F314A: ["09h-10h - Ocupada", "10h-11h - Disponível", "11h-12h - Ocupada"],
+    F316: ["09h-10h - Ocupada", "10h-11h - Ocupada", "11h-12h - Disponível"],
+    F318: ["09h-10h - Disponível", "10h-11h - Disponível", "11h-12h - Ocupada"],
+    F320: ["09h-10h - Ocupada", "10h-11h - Ocupada", "11h-12h - Disponível"],
+  };
+
+  const atualizarPlanta = () => {
+    if (!plantaImagem || !andarTexto) return;
+    plantaImagem.src = imagens[index];
+    andarTexto.textContent = andares[index];
+
+    // Limpar salas antigas
+    document.querySelectorAll(".sala").forEach((el) => el.remove());
+
+    // Adicionar salas conforme o andar
+    if (index === 0) {
+      // Andar 2
+      addSalas([
+        { nome: "F210", top: "31%", left: "42.5%" },
+        { nome: "F211", top: "41%", left: "42.5%" },
+        { nome: "F212", top: "61%", left: "47%" },
+        { nome: "F212A", top: "33%", left: "53.5%" },
+        { nome: "F212B", top: "50.5%", left: "54%" },
+      ]);
+    } else {
+      // Andar 3
+      addSalas([
+        { nome: "F311", top: "10%", left: "42.5%" },
+        { nome: "F313", top: "20%", left: "42.5%" },
+        { nome: "F315", top: "35%", left: "42.5%" },
+        { nome: "F317", top: "50%", left: "42.5%" },
+        { nome: "F319", top: "67%", left: "42.5%" },
+        { nome: "F314A", top: "16.5%", left: "54%" },
+        { nome: "F316", top: "35%", left: "54%" },
+        { nome: "F318", top: "50%", left: "54%" },
+        { nome: "F320", top: "67%", left: "54%" },
+      ]);
+    }
+  };
+
+  const addSalas = (salas) => {
+    const wrapper = document.querySelector(".planta-wrapper");
+    if (!wrapper) return;
+    salas.forEach((sala) => {
+      const div = document.createElement("div");
+      div.classList.add("sala");
+      div.dataset.nome = sala.nome;
+      div.style.top = sala.top;
+      div.style.left = sala.left;
+      wrapper.appendChild(div);
+
+      div.addEventListener("mousemove", (e) => {
+        const info = horarios[sala.nome] ? horarios[sala.nome].join("<br>") : "Sem dados";
+        if (tooltip) {
+          tooltip.innerHTML = `<strong>${sala.nome}</strong><br>${info}`;
+          tooltip.style.left = e.pageX + 15 + "px";
+          tooltip.style.top = e.pageY + 15 + "px";
+          tooltip.style.display = "block";
+        }
+      });
+
+      div.addEventListener("mouseleave", () => {
+        if (tooltip) tooltip.style.display = "none";
+      });
+    });
+  };
 
   if (plantaImagem && anterior && proximo && andarTexto) {
-    const atualizarPlanta = () => {
-      plantaImagem.src = imagens[index];
-      andarTexto.textContent = andares[index];
-    };
-
     anterior.addEventListener("click", () => {
       index = (index - 1 + imagens.length) % imagens.length;
       atualizarPlanta();
@@ -206,6 +285,9 @@ function carregarMapa() {
       index = (index + 1) % imagens.length;
       atualizarPlanta();
     });
+
+    // inicializa a planta na carga
+    atualizarPlanta();
   }
 }
 

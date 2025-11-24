@@ -313,6 +313,39 @@ body {
   transform: scale(1.02);
 }
 
+/* Marcadores de sala e tooltip (adicionados a partir da cópia antiga)
+   As salas são elementos posicionados por percentuais sobre a planta e mostram
+   um tooltip com o horário quando o rato passa por cima. */
+.sala {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  background: rgba(59, 130, 246, 0.3);
+  border: 2px solid rgba(59, 130, 246, 0.6);
+  border-radius: 8px;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.sala:hover {
+  transform: scale(1.1);
+  background: rgba(59, 130, 246, 0.6);
+}
+
+.tooltip {
+  position: fixed;
+  display: none;
+  background: rgba(15, 23, 42, 0.95);
+  color: #e5e7eb;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-width: 240px;
+  line-height: 1.4;
+}
+
 .andar-texto {
   margin-top: 20px;
   font-size: 1.8rem;
