@@ -168,7 +168,7 @@ if (verMapa && conteudo) {
     mapEl.innerHTML = `
       <button class="seta seta-esquerda" id="anterior">&#10094;</button>
       <div class="planta-wrapper">
-        <img id="plantaImagem" src="planta2.png" alt="Planta Andar 2" class="planta-img">
+        <img id="plantaImagem" src="../Img/planta2.png" alt="Planta Andar 2" class="planta-img">
         <div id="andarTexto" class="andar-texto">Andar 2</div>
       </div>
       <button class="seta seta-direita" id="proximo">&#10095;</button>
@@ -182,7 +182,7 @@ if (verMapa && conteudo) {
 
 // Função do mapa
 function carregarMapa() {
-  const imagens = ["planta2.png", "planta3.png"];
+  const imagens = ["../Img/planta2.png", "../Img/planta3.png"];
   const andares = ["Andar 2", "Andar 3"];
   let index = 0;
 
