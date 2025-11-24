@@ -174,11 +174,6 @@ if (verMapa && conteudo) {
         <!-- Tooltip -->
         <div id="tooltip" class="tooltip"></div>
       </div>
-
-      <!-- Edit controls -->
-      <button id="edit-salas" class="edit-salas">Editar Posições</button>
-      <textarea id="positions-json" class="positions-json" readonly hidden></textarea>
-
       <button class="seta seta-direita" id="proximo">&#10095;</button>
     `;
 
@@ -251,15 +246,6 @@ function carregarMapa() {
         { nome: "F320", top: "67%", left: "54%" },
       ]);
     }
-
-    // Apply sala style variables to wrapper (allows color/size customization)
-    const wrapper = document.querySelector('.planta-wrapper');
-    if (wrapper) {
-      // Default style — can be changed here or via dynamic controls
-      wrapper.style.setProperty('--sala-bg', 'rgba(234,88,12,0.45)');
-      wrapper.style.setProperty('--sala-border', 'rgba(234,88,12,0.9)');
-      wrapper.style.setProperty('--sala-size', '50px');
-    }
   };
 
   const addSalas = (salas) => {
@@ -271,12 +257,8 @@ function carregarMapa() {
       div.dataset.nome = sala.nome;
       div.style.top = sala.top;
       div.style.left = sala.left;
-      // size and color come from CSS variables on the wrapper
-      div.style.width = 'var(--sala-size, 50px)';
-      div.style.height = 'var(--sala-size, 50px)';
       wrapper.appendChild(div);
 
-      // Tooltip behavior
       div.addEventListener("mousemove", (e) => {
         const info = horarios[sala.nome] ? horarios[sala.nome].join("<br>") : "Sem dados";
         if (tooltip) {
@@ -290,57 +272,7 @@ function carregarMapa() {
       div.addEventListener("mouseleave", () => {
         if (tooltip) tooltip.style.display = "none";
       });
-
-      // Drag-to-reposition support (works when edit mode is enabled)
-      let dragging = false;
-      let startX = 0;
-      let startY = 0;
-      let origLeftPct = 0;
-      let origTopPct = 0;
-
-      const onMove = (ev) => {
-        if (!dragging) return;
-        const rect = wrapper.getBoundingClientRect();
-        const dx = ev.clientX - startX;
-        const dy = ev.clientY - startY;
-        const newLeft = Math.min(100, Math.max(0, origLeftPct + (dx / rect.width) * 100));
-        const newTop = Math.min(100, Math.max(0, origTopPct + (dy / rect.height) * 100));
-        div.style.left = newLeft + "%";
-        div.style.top = newTop + "%";
-      };
-
-      const onUp = () => {
-        if (!dragging) return;
-        dragging = false;
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('mouseup', onUp);
-        // update positions JSON
-        const positionsArea = document.getElementById('positions-json');
-        if (positionsArea) positionsArea.value = JSON.stringify(collectPositions(), null, 2);
-      };
-
-      div.addEventListener('mousedown', (e) => {
-        const editBtn = document.getElementById('edit-salas');
-        if (!editBtn || editBtn.dataset.edit !== 'true') return; // only drag when edit mode on
-        e.preventDefault();
-        dragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
-        origLeftPct = parseFloat(div.style.left) || 0;
-        origTopPct = parseFloat(div.style.top) || 0;
-        document.addEventListener('mousemove', onMove);
-        document.addEventListener('mouseup', onUp);
-      });
     });
-  };
-
-  // Collect current sala positions (for export)
-  const collectPositions = () => {
-    return Array.from(document.querySelectorAll('.sala')).map((el) => ({
-      nome: el.dataset.nome,
-      top: el.style.top,
-      left: el.style.left,
-    }));
   };
 
   if (plantaImagem && anterior && proximo && andarTexto) {
@@ -356,30 +288,6 @@ function carregarMapa() {
 
     // inicializa a planta na carga
     atualizarPlanta();
-
-    // Edit mode toggle and helpers
-    const editBtn = document.getElementById('edit-salas');
-    const positionsArea = document.getElementById('positions-json');
-    if (editBtn) {
-      editBtn.dataset.edit = 'false';
-      editBtn.addEventListener('click', () => {
-        const isEdit = editBtn.dataset.edit === 'true';
-        if (!isEdit) {
-          // enable edit mode
-          editBtn.dataset.edit = 'true';
-          editBtn.textContent = 'Sair de Edição';
-          if (positionsArea) {
-            positionsArea.hidden = false;
-            positionsArea.value = JSON.stringify(collectPositions(), null, 2);
-          }
-        } else {
-          // disable edit mode
-          editBtn.dataset.edit = 'false';
-          editBtn.textContent = 'Editar Posições';
-          if (positionsArea) positionsArea.hidden = true;
-        }
-      });
-    }
   }
 }
 

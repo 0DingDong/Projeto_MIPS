@@ -305,12 +305,7 @@ body {
   object-fit: contain;
   border-radius: 15px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.planta-img:hover {
-  transform: scale(1.02);
 }
 
 /* Marcadores de sala e tooltip (adicionados a partir da cópia antiga)
