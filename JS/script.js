@@ -104,11 +104,11 @@ if (salasLivres && conteudo) {
     contentEl.className = 'secao';
     contentEl.innerHTML = `
       <h2>Histórico de Reservas</h2>
-      <p>Aqui será exibido o histórico de reservas realizadas — quem reservou, sala, data e hora. Podes cancelar reservas através da coluna "Ações".</p>
+      <p>Aqui será exibido o histórico de reservas realizadas — autor, sala, data e hora. Podes cancelar reservas através da coluna "Ações".</p>
       <div class="reserves-table">
         <table>
           <thead>
-            <tr><th>Sala</th><th>Quem</th><th>Data</th><th>Hora</th><th>Ações</th></tr>
+            <tr><th>Sala</th><th>Autor</th><th>Data</th><th>Hora</th><th>Ações</th></tr>
           </thead>
           <tbody>
             <tr data-id="r1"><td>B2.04</td><td>João Silva</td><td>2025-11-12</td><td>14:00</td><td><button class="cancel-reservation">Cancelar</button></td></tr>
@@ -132,6 +132,8 @@ if (pedirSala && conteudo) {
       <form class="form-reserva">
         <label for="sala">Sala:</label>
         <input type="text" id="sala" placeholder="Ex: B2.04">
+        <label for="autor">Autor:</label>
+        <input type="text" id="autor" placeholder="Ex: João Silva">
         <label for="data">Data:</label>
         <input type="date" id="data">
         <label for="hora">Hora:</label>

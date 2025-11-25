@@ -509,6 +509,90 @@ body {
 }
 
 /* ===========================
+   TABELA DE HISTÓRICO DE RESERVAS
+=========================== */
+.reserves-table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.reserves-table table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(249, 250, 251, 0.9);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  table-layout: fixed; /* força colunas alinhadas e previsíveis */
+}
+
+.reserves-table thead {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+}
+
+.reserves-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  vertical-align: middle;
+}
+
+.reserves-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(209, 213, 219, 0.3);
+  color: #374151;
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+.reserves-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.reserves-table tbody tr:hover {
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.cancel-reservation {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 12px rgba(239, 68, 68, 0.3);
+}
+
+.cancel-reservation:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 18px rgba(239, 68, 68, 0.5);
+  background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+}
+
+.cancel-reservation:active {
+  transform: translateY(0);
+}
+
+.cancel-reservation:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Ajuste de larguras das colunas para melhor alinhamento */
+.reserves-table th:nth-child(1), .reserves-table td:nth-child(1) { width: 16%; }
+.reserves-table th:nth-child(2), .reserves-table td:nth-child(2) { width: 34%; }
+.reserves-table th:nth-child(3), .reserves-table td:nth-child(3) { width: 18%; }
+.reserves-table th:nth-child(4), .reserves-table td:nth-child(4) { width: 12%; }
+.reserves-table th:nth-child(5), .reserves-table td:nth-child(5) { width: 20%; }
+
+/* ===========================
    RESPONSIVIDADE
 =========================== */
 @media (max-width: 1024px) {
