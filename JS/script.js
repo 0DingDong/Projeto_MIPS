@@ -107,6 +107,14 @@ if (salasLivres && conteudo) {
       <p>Aqui será exibido o histórico de reservas realizadas — autor, sala, data e hora. Podes cancelar reservas através da coluna "Ações".</p>
       <div class="reserves-table">
         <table>
+          <!-- colgroup garante que colunas têm exatamente as mesmas larguras do CSS -->
+          <colgroup>
+            <col style="width:12%">
+            <col style="width:25%">
+            <col style="width:20%">
+            <col style="width:13%">
+            <col style="width:30%">
+          </colgroup>
           <thead>
             <tr><th>Sala</th><th>Autor</th><th>Data</th><th>Hora</th><th>Ações</th></tr>
           </thead>

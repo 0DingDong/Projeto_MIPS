@@ -586,11 +586,11 @@ body {
 }
 
 /* Ajuste de larguras das colunas para melhor alinhamento */
-.reserves-table th:nth-child(1), .reserves-table td:nth-child(1) { width: 16%; }
-.reserves-table th:nth-child(2), .reserves-table td:nth-child(2) { width: 34%; }
-.reserves-table th:nth-child(3), .reserves-table td:nth-child(3) { width: 18%; }
-.reserves-table th:nth-child(4), .reserves-table td:nth-child(4) { width: 12%; }
-.reserves-table th:nth-child(5), .reserves-table td:nth-child(5) { width: 20%; }
+.reserves-table th:nth-child(1), .reserves-table td:nth-child(1) { width: 12%; }
+.reserves-table th:nth-child(2), .reserves-table td:nth-child(2) { width: 25%; }
+.reserves-table th:nth-child(3), .reserves-table td:nth-child(3) { width: 20%; }
+.reserves-table th:nth-child(4), .reserves-table td:nth-child(4) { width: 13%; }
+.reserves-table th:nth-child(5), .reserves-table td:nth-child(5) { width: 30%; }
 
 /* ===========================
    RESPONSIVIDADE
