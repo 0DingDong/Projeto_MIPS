@@ -38,11 +38,6 @@ body {
   height: 170px;
   width: auto;
   filter: drop-shadow(0 5px 20px rgba(0, 0, 0, 0.05));
-  transition: transform 0.3s ease;
-}
-
-.logo1 img:hover {
-  transform: scale(1.05);
 }
 
 /* Logo MIPS (centrado no topo) */
@@ -69,11 +64,6 @@ body {
   height: 90px;
   width: auto;
   filter: brightness(1.0) drop-shadow(0 5px 20px rgba(0, 0, 0, 0.05));
-  transition: transform 0.3s ease;
-}
-
-.logo2 img:hover {
-  transform: scale(1.05);
 }
 
 /* Caixa de login centrada (versão clara) */
