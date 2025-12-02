@@ -5,7 +5,7 @@ if (sidebarClose && sidebar) {
   sidebarClose.addEventListener("click", () => sidebar.classList.toggle("close"));
 }
 
-// Elementos do menu (definir cedo para evitar referências antes da inicialização)
+// Elementos do menu
 const conteudo = document.getElementById("conteudo");
 const verMapa = document.getElementById("verMapa");
 const salasLivres = document.getElementById("salasLivres");
@@ -17,10 +17,8 @@ const accountDetails = document.getElementById("account-details");
 
 // Helpers para gerir #account-details e o conteúdo da <main>
 function ensureAccountDetails() {
-  // dedupe any accidental duplicates
   const allAds = document.querySelectorAll('#account-details');
   if (allAds && allAds.length > 1) {
-    // keep the first, remove the rest
     for (let i = 1; i < allAds.length; i++) allAds[i].remove();
   }
   let ad = document.getElementById('account-details');
@@ -36,7 +34,6 @@ function ensureAccountDetails() {
   return ad;
 }
 
-// snapshot to restore original main content when toggling details
 let originalMainHTML = null;
 
 function hideSiblings(mainEl, keepId = 'account-details') {
@@ -57,10 +54,8 @@ function hideAccountDetailsAndShowContent(contentEl) {
   const ad = ensureAccountDetails();
   if (ad) ad.style.display = 'none';
 
-  // snapshot original content (only the first time)
   if (originalMainHTML === null) originalMainHTML = mainEl.innerHTML;
 
-  // remove existing content children except account-details
   Array.from(mainEl.children).forEach((child) => {
     if (child.id !== 'account-details') mainEl.removeChild(child);
   });
@@ -76,19 +71,14 @@ function toggleAccountDetails(pageHtml) {
   const isHidden = (ad.style.display === 'none' || getComputedStyle(ad).display === 'none');
   ad.innerHTML = pageHtml;
   if (isHidden) {
-    // show details, hide other content
     ad.style.display = 'block';
     hideSiblings(mainEl, 'account-details');
   } else {
-    // hide details, restore other content
     ad.style.display = 'none';
-    // if we have a snapshot of original content, restore it
     if (originalMainHTML !== null) {
       mainEl.innerHTML = originalMainHTML;
-      // ensure account-details exists and is hidden after restore
       const ad2 = ensureAccountDetails();
       if (ad2) ad2.style.display = 'none';
-      // re-initialize map controls if map exists in restored content
       carregarMapa();
     } else {
       showSiblings(mainEl, 'account-details');
@@ -96,64 +86,123 @@ function toggleAccountDetails(pageHtml) {
   }
 }
 
-// Handler para 'Salas Livres' — preserva #account-details
+// Handler para 'Histórico de Reservas'
 if (salasLivres && conteudo) {
-  salasLivres.addEventListener("click", () => {
-    // construir conteúdo como elemento DOM e preservar #account-details
+  salasLivres.addEventListener("click", async () => {
     const contentEl = document.createElement('div');
     contentEl.className = 'secao';
     contentEl.innerHTML = `
       <h2>Histórico de Reservas</h2>
-      <p>Aqui será exibido o histórico de reservas realizadas — autor, sala, data e hora. Podes cancelar reservas através da coluna "Ações".</p>
-      <div class="reserves-table">
-        <table>
-          <!-- colgroup garante que colunas têm exatamente as mesmas larguras do CSS -->
-          <colgroup>
-            <col style="width:12%">
-            <col style="width:25%">
-            <col style="width:20%">
-            <col style="width:13%">
-            <col style="width:30%">
-          </colgroup>
-          <thead>
-            <tr><th>Sala</th><th>Autor</th><th>Data</th><th>Hora</th><th>Ações</th></tr>
-          </thead>
-          <tbody>
-            <tr data-id="r1"><td>B2.04</td><td>João Silva</td><td>2025-11-12</td><td>14:00</td><td><button class="cancel-reservation">Cancelar</button></td></tr>
-            <tr data-id="r2"><td>A1.01</td><td>Maria Costa</td><td>2025-11-11</td><td>09:00</td><td><button class="cancel-reservation">Cancelar</button></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <p>A carregar reservas...</p>
     `;
     hideAccountDetailsAndShowContent(contentEl);
+
+    // Buscar reservas do servidor
+    try {
+      const response = await fetch('../BD/buscar_reservas.php');
+      const data = await response.json();
+
+      if (data.success && data.reservas.length > 0) {
+        let tableHTML = `
+          <div class="reserves-table">
+            <table>
+              <colgroup>
+                <col style="width:12%">
+                <col style="width:25%">
+                <col style="width:20%">
+                <col style="width:13%">
+                <col style="width:30%">
+              </colgroup>
+              <thead>
+                <tr><th>Sala</th><th>Professor</th><th>Data</th><th>Hora</th><th>Ações</th></tr>
+              </thead>
+              <tbody>
+        `;
+
+        data.reservas.forEach(reserva => {
+          tableHTML += `
+            <tr data-id="${reserva.reserva_id}">
+              <td>${reserva.sala_num}</td>
+              <td>${reserva.pessoa_nome}</td>
+              <td>${reserva.data}</td>
+              <td>${reserva.hora}</td>
+              <td><button class="cancel-reservation" data-reserva-id="${reserva.reserva_id}">Cancelar</button></td>
+            </tr>
+          `;
+        });
+
+        tableHTML += `</tbody></table></div>`;
+        contentEl.innerHTML = `<h2>Histórico de Reservas</h2>` + tableHTML;
+      } else {
+        contentEl.innerHTML = `
+          <h2>Histórico de Reservas</h2>
+          <p>Ainda não tens reservas efetuadas.</p>
+        `;
+      }
+    } catch (error) {
+      contentEl.innerHTML = `
+        <h2>Histórico de Reservas</h2>
+        <p style="color: red;">Erro ao carregar reservas: ${error.message}</p>
+      `;
+    }
   });
 }
 
-// Handler para 'Reservar Sala' — preserva #account-details
+// Handler para 'Reservar Sala'
 if (pedirSala && conteudo) {
   pedirSala.addEventListener("click", () => {
     const contentEl = document.createElement('div');
     contentEl.className = 'secao';
     contentEl.innerHTML = `
       <h2>Reservar Sala</h2>
-      <p>Escolha a sala e o horário pretendido para realizar uma reserva.</p>
-      <form class="form-reserva">
-        <label for="sala">Sala:</label>
-        <input type="text" id="sala" placeholder="Ex: B2.04">
-        <label for="autor">Autor:</label>
-        <input type="text" id="autor" placeholder="Ex: João Silva">
+      <p>Escolha o número da sala e o horário pretendido.</p>
+      <form class="form-reserva" id="form-reserva">
+        <label for="sala">Número da Sala:</label>
+        <input type="number" id="sala" name="sala" placeholder="Ex: 101" required>
+        
         <label for="data">Data:</label>
-        <input type="date" id="data">
+        <input type="date" id="data" name="data" required>
+        
         <label for="hora">Hora:</label>
-        <input type="time" id="hora">
+        <input type="time" id="hora" name="hora" required>
+        
         <button type="submit">Reservar</button>
       </form>
+      <div id="reserva-message" style="margin-top: 20px; text-align: center;"></div>
     `;
     hideAccountDetailsAndShowContent(contentEl);
+
+    // Adicionar event listener ao formulário
+    const form = document.getElementById('form-reserva');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      const messageDiv = document.getElementById('reserva-message');
+      messageDiv.innerHTML = '<p>A processar reserva...</p>';
+
+      try {
+        const response = await fetch('../BD/fazer_reserva.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          messageDiv.innerHTML = `<p style="color: green; font-weight: bold;">✅ ${data.message}</p>`;
+          form.reset();
+        } else {
+          messageDiv.innerHTML = `<p style="color: red; font-weight: bold;">❌ ${data.message}</p>`;
+        }
+      } catch (error) {
+        messageDiv.innerHTML = `<p style="color: red;">Erro: ${error.message}</p>`;
+      }
+    });
   });
 }
 
-// Handler para 'Alertas' (somente disponível em página de segurança)
+// Handler para 'Alertas' (segurança)
 const alertas = document.getElementById('alertas');
 if (alertas && conteudo) {
   alertas.addEventListener('click', () => {
@@ -169,10 +218,9 @@ if (alertas && conteudo) {
 
 carregarMapa();
 
-// Handler para 'Ver Mapa' — injeta o mapa preservando #account-details quando existir
+// Handler para 'Ver Mapa'
 if (verMapa && conteudo) {
   verMapa.addEventListener("click", () => {
-    // construir o mapa como elemento DOM
     const mapEl = document.createElement('div');
     mapEl.className = 'planta-container';
     mapEl.innerHTML = `
@@ -180,14 +228,11 @@ if (verMapa && conteudo) {
       <div class="planta-wrapper">
         <img id="plantaImagem" src="../Img/planta2.png" alt="Planta Andar 2" class="planta-img">
         <div id="andarTexto" class="andar-texto">Andar 2</div>
-
-        <!-- Tooltip -->
         <div id="tooltip" class="tooltip"></div>
       </div>
       <button class="seta seta-direita" id="proximo">&#10095;</button>
     `;
 
-    // esconder account details e mostrar o mapa
     hideAccountDetailsAndShowContent(mapEl);
     carregarMapa();
   });
@@ -212,7 +257,6 @@ function carregarMapa() {
     F212A: ["09h-10h - Ocupada", "10h-11h - Disponível", "11h-12h - Disponível"],
     F212B: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Ocupada"],
 
-    // Andar 3
     F311: ["09h-10h - Ocupada", "10h-11h - Disponível", "11h-12h - Disponível"],
     F313: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Disponível"],
     F315: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Ocupada"],
@@ -229,12 +273,9 @@ function carregarMapa() {
     plantaImagem.src = imagens[index];
     andarTexto.textContent = andares[index];
 
-    // Limpar salas antigas
     document.querySelectorAll(".sala").forEach((el) => el.remove());
 
-    // Adicionar salas conforme o andar
     if (index === 0) {
-      // Andar 2
       addSalas([
         { nome: "F210", top: "31%", left: "42.5%" },
         { nome: "F211", top: "41%", left: "42.5%" },
@@ -243,7 +284,6 @@ function carregarMapa() {
         { nome: "F212B", top: "50.5%", left: "54%" },
       ]);
     } else {
-      // Andar 3
       addSalas([
         { nome: "F311", top: "10%", left: "42.5%" },
         { nome: "F313", top: "20%", left: "42.5%" },
@@ -296,12 +336,11 @@ function carregarMapa() {
       atualizarPlanta();
     });
 
-    // inicializa a planta na carga
     atualizarPlanta();
   }
 }
 
-// Mostrar detalhes da conta dependendo da página
+// Mostrar detalhes da conta
 if (detalhesConta) {
   detalhesConta.addEventListener("click", (e) => {
     e.preventDefault();
@@ -325,28 +364,42 @@ if (detalhesConta) {
   });
 }
 
-// Delegate handler for cancel reservation buttons (mock DELETE)
-document.addEventListener('click', function (e) {
+// Delegate handler para cancelar reservas
+document.addEventListener('click', async function (e) {
   const btn = e.target.closest && e.target.closest('.cancel-reservation');
   if (!btn) return;
 
-  // confirm cancellation
   if (!confirm('Tens a certeza que queres cancelar esta reserva?')) return;
 
-  // find the row and reservation id
   const row = btn.closest('tr');
-  const resId = row ? row.dataset.id : null;
+  const resId = btn.dataset.reservaId;
 
-  // UI feedback while processing
   btn.disabled = true;
   const oldText = btn.textContent;
   btn.textContent = 'Cancelando...';
 
-  // Mock backend call (replace with real fetch when API available)
-  // Example: fetch(`/api/reservations/${resId}`, { method: 'DELETE' })
-  setTimeout(() => {
-    // simulate success
-    if (row) row.remove();
-    alert('Reserva cancelada com sucesso.');
-  }, 800);
+  try {
+    const formData = new FormData();
+    formData.append('reserva_id', resId);
+
+    const response = await fetch('../BD/cancelar_reserva.php', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      if (row) row.remove();
+      alert('✅ Reserva cancelada com sucesso!');
+    } else {
+      alert('❌ ' + data.message);
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
+  } catch (error) {
+    alert('❌ Erro: ' + error.message);
+    btn.disabled = false;
+    btn.textContent = oldText;
+  }
 });
