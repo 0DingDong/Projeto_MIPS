@@ -23,10 +23,10 @@ if (empty($sala_num) || empty($data) || empty($hora)) {
 // Combinar data e hora
 $data_hora = $data . ' ' . $hora . ':00';
 
-// Buscar sala_id pelo número da sala
+// Buscar sala_id pelo número/código da sala
 $sql = "SELECT sala_id FROM sala WHERE sala_num = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $sala_num);
+$stmt->bind_param("s", $sala_num);
 $stmt->execute();
 $result = $stmt->get_result();
 
