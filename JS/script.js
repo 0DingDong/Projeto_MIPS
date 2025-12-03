@@ -157,8 +157,8 @@ if (pedirSala && conteudo) {
       <h2>Reservar Sala</h2>
       <p>Escolha o número da sala e o horário pretendido.</p>
       <form class="form-reserva" id="form-reserva">
-        <label for="sala">Número da Sala:</label>
-        <input type="number" id="sala" name="sala" placeholder="Ex: 101" required>
+        <label for="sala">Sala:</label>
+        <input type="text" id="sala" name="sala" placeholder="Ex: F231" required>
         
         <label for="data">Data:</label>
         <input type="date" id="data" name="data" required>
