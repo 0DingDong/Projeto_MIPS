@@ -172,7 +172,7 @@ if (pedirSala && conteudo) {
     `;
     hideAccountDetailsAndShowContent(contentEl);
 
-    // Adicionar event listener ao formulário
+    // Event listener atualizado (com debug)
     const form = document.getElementById('form-reserva');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -182,12 +182,24 @@ if (pedirSala && conteudo) {
       messageDiv.innerHTML = '<p>A processar reserva...</p>';
 
       try {
+
         const response = await fetch('../BD/fazer_reserva.php', {
           method: 'POST',
           body: formData
         });
 
-        const data = await response.json();
+        // --- DEBUG IMPORTANTE ---
+        const raw = await response.text();
+        console.log("RAW RESPONSE:", raw);
+
+        let data;
+        try {
+          data = JSON.parse(raw);
+        } catch {
+          messageDiv.innerHTML = `<p style="color:red;">Erro: O servidor devolveu uma resposta inválida.<br>Ver consola (F12) → RAW RESPONSE</p>`;
+          return;
+        }
+        // -------------------------
 
         if (data.success) {
           messageDiv.innerHTML = `<p style="color: green; font-weight: bold;">✅ ${data.message}</p>`;
