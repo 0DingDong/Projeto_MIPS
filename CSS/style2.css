@@ -469,7 +469,7 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
+  box-shadow: none;
 }
 
 .form-reserva button:hover {
