@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
 include('db_connect.php');
 session_start();
 
@@ -35,11 +34,6 @@ $data_hora_fim = $data . ' ' . $hora_fim . ':00';
 // Buscar sala_id pelo código da sala
 $sql = "SELECT sala_id FROM sala WHERE sala_num = ?";
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
-    echo json_encode(['success' => false, 'message' => 'Erro ao preparar query: ' . $conn->error]);
-    exit();
-}
-
 $stmt->bind_param("s", $sala_num);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -62,11 +56,6 @@ $sql_check = "SELECT * FROM reserva
                   (? < reserva_Data_Fim AND ? > reserva_Data)
               )";
 $stmt_check = $conn->prepare($sql_check);
-if (!$stmt_check) {
-    echo json_encode(['success' => false, 'message' => 'Erro ao preparar query: ' . $conn->error]);
-    exit();
-}
-
 $stmt_check->bind_param("isss", $sala_id, $data, $data_hora_inicio, $data_hora_fim);
 $stmt_check->execute();
 $result_check = $stmt_check->get_result();
@@ -87,11 +76,6 @@ if ($result_check->num_rows > 0) {
 $sql_insert = "INSERT INTO reserva (reserva_Professor_id, reserva_Sala_id, reserva_Data, reserva_Data_Fim) 
                VALUES (?, ?, ?, ?)";
 $stmt_insert = $conn->prepare($sql_insert);
-if (!$stmt_insert) {
-    echo json_encode(['success' => false, 'message' => 'Erro ao preparar query: ' . $conn->error]);
-    exit();
-}
-
 $stmt_insert->bind_param("iiss", $professor_id, $sala_id, $data_hora_inicio, $data_hora_fim);
 
 if ($stmt_insert->execute()) {
@@ -107,3 +91,4 @@ $stmt->close();
 $stmt_check->close();
 $stmt_insert->close();
 $conn->close();
+?>

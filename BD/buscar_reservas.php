@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
 include('db_connect.php');
 session_start();
 
@@ -27,17 +26,8 @@ $sql = "SELECT
         ORDER BY r.reserva_Data DESC";
 
 $stmt = $conn->prepare($sql);
-if (!$stmt) {
-    echo json_encode(['success' => false, 'message' => 'Erro ao preparar query: ' . $conn->error]);
-    exit();
-}
-
 $stmt->bind_param("i", $professor_id);
-if (!$stmt->execute()) {
-    echo json_encode(['success' => false, 'message' => 'Erro ao executar query: ' . $stmt->error]);
-    exit();
-}
-
+$stmt->execute();
 $result = $stmt->get_result();
 
 $reservas = [];
@@ -49,3 +39,4 @@ echo json_encode(['success' => true, 'reservas' => $reservas]);
 
 $stmt->close();
 $conn->close();
+?>
