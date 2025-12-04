@@ -49,4 +49,3 @@ echo json_encode(['success' => true, 'reservas' => $reservas]);
 
 $stmt->close();
 $conn->close();
-?>

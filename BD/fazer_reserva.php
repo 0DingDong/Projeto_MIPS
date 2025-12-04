@@ -107,4 +107,3 @@ $stmt->close();
 $stmt_check->close();
 $stmt_insert->close();
 $conn->close();
-?>

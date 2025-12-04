@@ -54,4 +54,3 @@ if ($stmt_delete->execute()) {
 $stmt_check->close();
 $stmt_delete->close();
 $conn->close();
-?>
