@@ -567,12 +567,12 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 3px 12px rgba(239, 68, 68, 0.3);
+  box-shadow: none;
 }
 
 .cancel-reservation:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 18px rgba(239, 68, 68, 0.5);
+  box-shadow: none;
   background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
 }
 
