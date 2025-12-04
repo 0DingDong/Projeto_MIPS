@@ -125,7 +125,7 @@ if (salasLivres && conteudo) {
               <td>${reserva.sala_num}</td>
               <td>${reserva.pessoa_nome}</td>
               <td>${reserva.data}</td>
-              <td>${reserva.hora}</td>
+              <td>${reserva.hora_inicio} - ${reserva.hora_fim}</td>
               <td><button class="cancel-reservation" data-reserva-id="${reserva.reserva_id}">Cancelar</button></td>
             </tr>
           `;
@@ -155,16 +155,19 @@ if (pedirSala && conteudo) {
     contentEl.className = 'secao';
     contentEl.innerHTML = `
       <h2>Reservar Sala</h2>
-      <p>Escolha o número da sala e o horário pretendido.</p>
+      <p>Escolha o código da sala e o horário pretendido.</p>
       <form class="form-reserva" id="form-reserva">
-        <label for="sala">Sala:</label>
+        <label for="sala">Código da Sala:</label>
         <input type="text" id="sala" name="sala" placeholder="Ex: F231" required>
         
         <label for="data">Data:</label>
         <input type="date" id="data" name="data" required>
         
-        <label for="hora">Hora:</label>
-        <input type="time" id="hora" name="hora" required>
+        <label for="hora-inicio">Hora de Início:</label>
+        <input type="time" id="hora-inicio" name="hora_inicio" required>
+        
+        <label for="hora-fim">Hora de Fim:</label>
+        <input type="time" id="hora-fim" name="hora_fim" required>
         
         <button type="submit">Reservar</button>
       </form>
@@ -172,7 +175,7 @@ if (pedirSala && conteudo) {
     `;
     hideAccountDetailsAndShowContent(contentEl);
 
-    // Event listener atualizado (com debug)
+    // Adicionar event listener ao formulário
     const form = document.getElementById('form-reserva');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -182,24 +185,12 @@ if (pedirSala && conteudo) {
       messageDiv.innerHTML = '<p>A processar reserva...</p>';
 
       try {
-
         const response = await fetch('../BD/fazer_reserva.php', {
           method: 'POST',
           body: formData
         });
 
-        // --- DEBUG IMPORTANTE ---
-        const raw = await response.text();
-        console.log("RAW RESPONSE:", raw);
-
-        let data;
-        try {
-          data = JSON.parse(raw);
-        } catch {
-          messageDiv.innerHTML = `<p style="color:red;">Erro: O servidor devolveu uma resposta inválida.<br>Ver consola (F12) → RAW RESPONSE</p>`;
-          return;
-        }
-        // -------------------------
+        const data = await response.json();
 
         if (data.success) {
           messageDiv.innerHTML = `<p style="color: green; font-weight: bold;">✅ ${data.message}</p>`;

@@ -16,7 +16,8 @@ $sql = "SELECT
             s.sala_num,
             p.pessoa_nome,
             DATE_FORMAT(r.reserva_Data, '%Y-%m-%d') as data,
-            DATE_FORMAT(r.reserva_Data, '%H:%i') as hora
+            DATE_FORMAT(r.reserva_Data, '%H:%i') as hora_inicio,
+            DATE_FORMAT(r.reserva_Data_Fim, '%H:%i') as hora_fim
         FROM reserva r
         JOIN sala s ON r.reserva_Sala_id = s.sala_id
         JOIN professor prof ON r.reserva_Professor_id = prof.professor_id
