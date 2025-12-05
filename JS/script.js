@@ -15,6 +15,12 @@ const conta = document.getElementById("conta");
 const detalhesConta = document.getElementById("detalhes-conta");
 const accountDetails = document.getElementById("account-details");
 
+// Garantir conteúdo por defeito consistente no painel de conta (evita textos antigos em cache)
+if (accountDetails) {
+  accountDetails.innerHTML = `<h2>Informações da Conta</h2><p>A carregar informações do utilizador...</p>`;
+  accountDetails.style.display = 'none';
+}
+
 // Helpers para gerir #account-details e o conteúdo da <main>
 function ensureAccountDetails() {
   const allAds = document.querySelectorAll('#account-details');
@@ -343,27 +349,60 @@ function carregarMapa() {
   }
 }
 
-// Mostrar detalhes da conta
+// Mostrar informações da conta
 if (detalhesConta) {
-  detalhesConta.addEventListener("click", (e) => {
+  detalhesConta.addEventListener("click", async (e) => {
     e.preventDefault();
     const page = (document.body && document.body.dataset && document.body.dataset.page) ? document.body.dataset.page : (document.title || '').toLowerCase();
-    let html = '';
-    if (page === 'aluno' || (typeof page === 'string' && page.toLowerCase().includes('aluno'))) {
-      html = `<h2>Detalhes da Conta</h2>
-              <p>Como aluno, pode pesquisar salas e visualizar o mapa interativo para localizar salas no IPS.</p>`;
-    } else if (page === 'professor' || (typeof page === 'string' && page.toLowerCase().includes('professor'))) {
-      html = `<h2>Detalhes da Conta</h2>
-              <p>Como professor, pode verificar salas livres, efetuar e gerir reservas, e consultar relatórios das suas reservas e pedidos.</p>`;
-    } else if (page === 'seguranca' || (typeof page === 'string' && page.toLowerCase().includes('seguran'))) {
-      html = `<h2>Detalhes da Conta</h2>
-              <p>Como membro da segurança, pode verificar o estado da porta das salas e receber alertas quando são abertas.</p>`;
-    } else {
-      html = `<h2>Detalhes da Conta</h2>
-              <p>Informações sobre as capacidades de cada tipo de conta no sistema.</p>`;
-    }
 
-    toggleAccountDetails(html);
+    // Mostrar loading imediato
+    toggleAccountDetails(`<h2>Informações da Conta</h2><p>A carregar informações do utilizador...</p>`);
+    // Buscar informações do utilizador ao servidor
+    try {
+  const resp = await fetch('../BD/get_user_info.php', { credentials: 'same-origin' });
+      const userData = await resp.json();
+      console.log('get_user_info response:', userData);
+
+      let infoHtml = `<h2>Informações da Conta</h2>`;
+      if (userData.success) {
+        const typeMap = { professor: 'Professor', aluno: 'Aluno', seguranca: 'Segurança' };
+        const typeLabel = typeMap[userData.user_type] || userData.user_type || '';
+        infoHtml += `<p><strong>${typeLabel} - ${userData.nome || ''}</strong></p>`;
+        infoHtml += `<p><strong>Email -</strong> ${userData.email || ''}</p><hr />`;
+      } else {
+        infoHtml += `<p><em>Utilizador não autenticado.</em></p>`;
+        infoHtml += `<p><a href="../html/login.html">Iniciar sessão</a> para ver as suas informações.</p>`;
+  infoHtml += `<details open style="margin-top:8px;"><summary>Debug</summary><pre style="white-space:pre-wrap;">${userData.message || JSON.stringify(userData, null, 2)}</pre></details><hr />`;
+      }
+
+      // Conteúdo específico por tipo de página
+      if (page === 'aluno' || (typeof page === 'string' && page.toLowerCase().includes('aluno'))) {
+        infoHtml += `<p>Como aluno, pode pesquisar salas e visualizar o mapa interativo para localizar salas no IPS.</p>`;
+      } else if (page === 'professor' || (typeof page === 'string' && page.toLowerCase().includes('professor'))) {
+        infoHtml += `<p>Como professor, pode verificar salas livres, efetuar e gerir reservas, e consultar relatórios das suas reservas e pedidos.</p>`;
+      } else if (page === 'seguranca' || (typeof page === 'string' && page.toLowerCase().includes('seguran'))) {
+        infoHtml += `<p>Como membro da segurança, pode verificar o estado da porta das salas e receber alertas quando são abertas.</p>`;
+      } else {
+        infoHtml += `<p>Informações sobre as capacidades de cada tipo de conta no sistema.</p>`;
+      }
+
+      // Forçar atualização do painel de conta (ignorar possíveis estados guardados)
+      const mainEl2 = document.querySelector('.main');
+      const ad2 = ensureAccountDetails();
+      if (ad2 && mainEl2) {
+        // Save originalMainHTML if not yet saved
+        if (originalMainHTML === null) originalMainHTML = mainEl2.innerHTML;
+        ad2.innerHTML = infoHtml;
+        ad2.style.display = 'block';
+        hideSiblings(mainEl2, 'account-details');
+      } else {
+        // fallback
+        toggleAccountDetails(infoHtml);
+      }
+    } catch (err) {
+      const errHtml = `<h2>Informações da Conta</h2><p style="color:red;">Erro ao obter informações: ${err.message}</p>`;
+      toggleAccountDetails(errHtml);
+    }
   });
 }
 
