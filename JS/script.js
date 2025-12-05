@@ -86,13 +86,13 @@ function toggleAccountDetails(pageHtml) {
   }
 }
 
-// Handler para 'Histórico de Reservas'
+// Handler para 'Gestão de Reservas'
 if (salasLivres && conteudo) {
   salasLivres.addEventListener("click", async () => {
     const contentEl = document.createElement('div');
     contentEl.className = 'secao';
     contentEl.innerHTML = `
-      <h2>Histórico de Reservas</h2>
+      <h2>Gestão de Reservas</h2>
       <p>A carregar reservas...</p>
     `;
     hideAccountDetailsAndShowContent(contentEl);
@@ -132,16 +132,16 @@ if (salasLivres && conteudo) {
         });
 
         tableHTML += `</tbody></table></div>`;
-        contentEl.innerHTML = `<h2>Histórico de Reservas</h2>` + tableHTML;
+        contentEl.innerHTML = `<h2>Gestão de Reservas</h2>` + tableHTML;
       } else {
         contentEl.innerHTML = `
-          <h2>Histórico de Reservas</h2>
+          <h2>Gestão de Reservas</h2>
           <p>Ainda não tens reservas efetuadas.</p>
         `;
       }
     } catch (error) {
       contentEl.innerHTML = `
-        <h2>Histórico de Reservas</h2>
+        <h2>Gestão de Reservas</h2>
         <p style="color: red;">Erro ao carregar reservas: ${error.message}</p>
       `;
     }
