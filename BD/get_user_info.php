@@ -51,30 +51,68 @@ try {
         if ($conn->error) $debug[] = ['sql_error' => $conn->error];
     }
 
-    // 2) Aluno
+    // 2) Aluno - buscar direto na tabela aluno e depois em pessoa
     if (!$result && $user_type === 'aluno') {
-        $sql = "SELECT aluno_nome AS nome, aluno_email AS email FROM aluno WHERE aluno_id = ?";
+        $sql = "SELECT * FROM aluno WHERE aluno_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $user_id);
         $stmt->execute();
         $res = $stmt->get_result();
-        $debug[] = ['q' => 'aluno', 'rows' => $res->num_rows];
+        $debug[] = ['q' => 'aluno_by_id', 'rows' => $res->num_rows];
         $row = $res->fetch_assoc();
-        if ($row) $result = $row;
+        $debug[] = ['aluno_row' => $row];
+        if ($row) {
+            $nome = '';
+            $email = $row['aluno_email'] ?? '';
+            // se existir ligação para pessoa, tentar obter nome aí
+            if (!empty($row['aluno_Pessoa_id'])) {
+                $pessoaId = $row['aluno_Pessoa_id'];
+                $s2 = $conn->prepare("SELECT pessoa_nome FROM pessoa WHERE pessoa_id = ?");
+                $s2->bind_param('i', $pessoaId);
+                $s2->execute();
+                $r2 = $s2->get_result();
+                $debug[] = ['q' => 'pessoa_lookup_by_aluno', 'rows' => $r2->num_rows];
+                $rrow = $r2->fetch_assoc();
+                $debug[] = ['pessoa_row_aluno' => $rrow];
+                if ($rrow && isset($rrow['pessoa_nome'])) $nome = $rrow['pessoa_nome'];
+                $s2->close();
+            }
+            $result = ['nome' => $nome, 'email' => $email];
+        }
         $stmt->close();
+        if ($conn->error) $debug[] = ['sql_error_aluno' => $conn->error];
     }
 
-    // 3) Seguranca
+    // 3) Seguranca - buscar direto na tabela seguranca e depois em pessoa
     if (!$result && $user_type === 'seguranca') {
-        $sql = "SELECT seguranca_nome AS nome, seguranca_email AS email FROM seguranca WHERE seguranca_id = ?";
+        $sql = "SELECT * FROM seguranca WHERE seguranca_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $user_id);
         $stmt->execute();
         $res = $stmt->get_result();
-        $debug[] = ['q' => 'seguranca', 'rows' => $res->num_rows];
+        $debug[] = ['q' => 'seguranca_by_id', 'rows' => $res->num_rows];
         $row = $res->fetch_assoc();
-        if ($row) $result = $row;
+        $debug[] = ['seguranca_row' => $row];
+        if ($row) {
+            $nome = '';
+            $email = $row['seguranca_email'] ?? '';
+            // se existir ligação para pessoa, tentar obter nome aí
+            if (!empty($row['seguranca_Pessoa_id'])) {
+                $pessoaId = $row['seguranca_Pessoa_id'];
+                $s2 = $conn->prepare("SELECT pessoa_nome FROM pessoa WHERE pessoa_id = ?");
+                $s2->bind_param('i', $pessoaId);
+                $s2->execute();
+                $r2 = $s2->get_result();
+                $debug[] = ['q' => 'pessoa_lookup_by_seguranca', 'rows' => $r2->num_rows];
+                $rrow = $r2->fetch_assoc();
+                $debug[] = ['pessoa_row_seguranca' => $rrow];
+                if ($rrow && isset($rrow['pessoa_nome'])) $nome = $rrow['pessoa_nome'];
+                $s2->close();
+            }
+            $result = ['nome' => $nome, 'email' => $email];
+        }
         $stmt->close();
+        if ($conn->error) $debug[] = ['sql_error_seguranca' => $conn->error];
     }
 
     // 4) Se nada ainda, tentar procurar na tabela pessoa usando pessoa_id = user_id
