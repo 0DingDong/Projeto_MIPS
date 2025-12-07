@@ -156,7 +156,7 @@ if (salasLivres && conteudo) {
 
 // Handler para 'Reservar Sala'
 if (pedirSala && conteudo) {
-  pedirSala.addEventListener("click", () => {
+  pedirSala.addEventListener("click", async () => {
     const contentEl = document.createElement('div');
     contentEl.className = 'secao';
     contentEl.innerHTML = `
@@ -164,7 +164,10 @@ if (pedirSala && conteudo) {
       <p>Escolha o código da sala e o horário pretendido.</p>
       <form class="form-reserva" id="form-reserva">
         <label for="sala">Código da Sala:</label>
-        <input type="text" id="sala" name="sala" placeholder="Ex: F231" required>
+        <div class="sala-autocomplete-wrapper">
+          <input type="text" id="sala" name="sala" placeholder="Ex: F231" required autocomplete="off">
+          <ul id="sala-suggestions" class="sala-suggestions hidden"></ul>
+        </div>
         
         <label for="data">Data:</label>
         <input type="date" id="data" name="data" required>
@@ -180,6 +183,67 @@ if (pedirSala && conteudo) {
       <div id="reserva-message" style="margin-top: 20px; text-align: center;"></div>
     `;
     hideAccountDetailsAndShowContent(contentEl);
+
+    // Carregar lista de salas
+    let salasList = [];
+    try {
+      const salaResponse = await fetch('../BD/listar_salas.php');
+      const salaData = await salaResponse.json();
+      if (salaData.success) {
+        salasList = salaData.salas;
+      }
+    } catch (error) {
+      console.error('Erro ao carregar salas:', error);
+    }
+
+    // Configurar autocomplete
+    const salaInput = document.getElementById('sala');
+    const salaSuggestions = document.getElementById('sala-suggestions');
+
+    const showSalas = (filtered) => {
+      salaSuggestions.innerHTML = '';
+      if (filtered.length > 0) {
+        filtered.forEach(sala => {
+          const li = document.createElement('li');
+          li.textContent = sala.num;
+          li.addEventListener('click', () => {
+            salaInput.value = sala.num;
+            salaSuggestions.classList.add('hidden');
+          });
+          salaSuggestions.appendChild(li);
+        });
+        salaSuggestions.classList.remove('hidden');
+      } else {
+        salaSuggestions.classList.add('hidden');
+      }
+    };
+
+    const filterSalas = (query) => {
+      if (!query.trim()) {
+        // Se não tem query, mostrar todas as salas
+        showSalas(salasList);
+        return;
+      }
+      const filtered = salasList.filter(s => s.num.toLowerCase().includes(query.toLowerCase()));
+      showSalas(filtered);
+    };
+
+    // Mostrar lista ao focar no input
+    salaInput.addEventListener('focus', () => {
+      filterSalas(salaInput.value);
+    });
+
+    // Filtrar conforme escreve
+    salaInput.addEventListener('input', (e) => {
+      filterSalas(e.target.value);
+    });
+
+    // Fechar dropdown ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (e.target !== salaInput && !salaSuggestions.contains(e.target)) {
+        salaSuggestions.classList.add('hidden');
+      }
+    });
 
     // Adicionar event listener ao formulário
     const form = document.getElementById('form-reserva');
