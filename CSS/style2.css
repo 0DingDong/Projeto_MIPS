@@ -725,7 +725,12 @@ body {
 }
 
 .reserves-table td.col-actions {
-  text-align: center;
+  /* use flex so content (buttons) is always centered horizontally
+     and vertically inside the cell regardless of button text length */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center; /* fallback */
 }
 
 .reserves-table th:last-child {
@@ -751,6 +756,11 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: none;
+}
+
+/* keep action buttons a consistent minimum width so alignment stays stable */
+.cancel-reservation {
+  min-width: 96px;
 }
 
 .cancel-reservation:hover {
