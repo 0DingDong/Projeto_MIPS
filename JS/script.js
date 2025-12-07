@@ -391,22 +391,13 @@ if (alertas && conteudo) {
     const contentEl = document.createElement('div');
     contentEl.className = 'secao';
     contentEl.innerHTML = `
-      <h2>Alertas</h2>
-      <div class="alerts-wrapper" style="display:flex;gap:20px;align-items:flex-start;">
-        <div class="alerts-list" style="flex:1;">
-          <h3>Alertas Ativas</h3>
-          <div id="alerts-items">A carregar alertas...</div>
-        </div>
-        <div class="alerts-history" style="flex:1;max-width:520px;">
-          <h3>Histórico de Alertas</h3>
-          <div id="history-items">A carregar histórico...</div>
-        </div>
-      </div>
+      <h2>Alertas Ativas</h2>
+      <div id="alerts-items">A carregar alertas...</div>
     `;
 
     hideAccountDetailsAndShowContent(contentEl);
 
-    // Render helpers
+    // Render helper
     function renderAlerts(list) {
       const container = document.getElementById('alerts-items');
       if (!container) return;
@@ -416,16 +407,53 @@ if (alertas && conteudo) {
       }
       let html = '<ul style="list-style:none;padding:0;margin:0;">';
       list.forEach(a => {
-        html += `<li style="background:#fff;padding:10px;border-radius:8px;margin-bottom:10px;box-shadow:0 2px 6px rgba(0,0,0,0.03);">
-                    <div style="font-weight:600">${a.sala || ''}</div>
-                    <div style="color:#374151;margin-top:4px">${a.mensagem || ''}</div>
-                    <div style="color:#6b7280;font-size:0.9rem;margin-top:6px">Aberto em: ${a.opened_at || ''}</div>
+        html += `<li style="background:#fff;padding:12px;border-radius:8px;margin-bottom:10px;box-shadow:0 2px 6px rgba(0,0,0,0.03);border-left:4px solid #ef4444;">
+                    <div style="font-weight:600;color:#1f2937;">${a.sala || ''}</div>
+                    <div style="color:#374151;margin-top:4px;font-size:0.95rem;">${a.mensagem || ''}</div>
+                    <div style="color:#6b7280;font-size:0.85rem;margin-top:6px;">Aberto em: ${a.opened_at || ''}</div>
                   </li>`;
       });
       html += '</ul>';
       container.innerHTML = html;
     }
 
+    // Fetch function
+    async function loadAlerts() {
+      try {
+        const alertsResp = await fetch('../BD/listar_alertas.php');
+        const alertsData = await alertsResp.json();
+
+        if (alertsData && alertsData.success) renderAlerts(alertsData.alertas || []);
+        else renderAlerts([]);
+      } catch (err) {
+        const a = document.getElementById('alerts-items'); if (a) a.innerHTML = '<p style="color:red;">Erro ao carregar alertas.</p>';
+      }
+    }
+
+    // primeira carga
+    loadAlerts();
+    // polling a cada 5s
+    window._alertsInterval = setInterval(loadAlerts, 5000);
+  });
+}
+
+// Handler para 'Histórico de Alertas' (segurança)
+const historicoAlertas = document.getElementById('historico-alertas');
+if (historicoAlertas && conteudo) {
+  historicoAlertas.addEventListener('click', () => {
+    // limpar qualquer polling anterior
+    if (window._historyInterval) { clearInterval(window._historyInterval); window._historyInterval = null; }
+
+    const contentEl = document.createElement('div');
+    contentEl.className = 'secao';
+    contentEl.innerHTML = `
+      <h2>Histórico de Alertas</h2>
+      <div id="history-items">A carregar histórico...</div>
+    `;
+
+    hideAccountDetailsAndShowContent(contentEl);
+
+    // Render helper
     function renderHistory(list) {
       const container = document.getElementById('history-items');
       if (!container) return;
@@ -434,45 +462,46 @@ if (alertas && conteudo) {
         return;
       }
       let html = `<table style="width:100%;border-collapse:collapse;">
-                    <thead><tr style="text-align:left;color:#374151;"><th style="padding:6px 8px">Sala</th><th style="padding:6px 8px">Aberto</th><th style="padding:6px 8px">Fechado</th></tr></thead><tbody>`;
-      list.forEach(h => {
-        html += `<tr style="background:#fff;border-radius:6px;margin-bottom:8px;">
-                   <td style="padding:8px">${h.sala || ''}</td>
-                   <td style="padding:8px">${h.opened_at || ''}</td>
-                   <td style="padding:8px">${h.closed_at || ''}</td>
+                    <thead>
+                      <tr style="text-align:left;background:#f3f4f6;border-bottom:2px solid #e5e7eb;">
+                        <th style="padding:10px 12px;font-weight:600;color:#374151;">Sala</th>
+                        <th style="padding:10px 12px;font-weight:600;color:#374151;">Aberto</th>
+                        <th style="padding:10px 12px;font-weight:600;color:#374151;">Fechado</th>
+                      </tr>
+                    </thead>
+                    <tbody>`;
+      list.forEach((h, idx) => {
+        const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
+        html += `<tr style="background:${bgColor};border-bottom:1px solid #e5e7eb;">
+                   <td style="padding:10px 12px;color:#1f2937;font-weight:500;">${h.sala || ''}</td>
+                   <td style="padding:10px 12px;color:#374151;">${h.opened_at || ''}</td>
+                   <td style="padding:10px 12px;color:#374151;">${h.closed_at || ''}</td>
                  </tr>`;
       });
       html += '</tbody></table>';
       container.innerHTML = html;
     }
 
-    // Fetch functions
-    async function loadAlertsAndHistory() {
+    // Fetch function
+    async function loadHistory() {
       try {
-        const [alertsResp, histResp] = await Promise.all([
-          fetch('../BD/listar_alertas.php'),
-          fetch('../BD/listar_historico_alertas.php')
-        ]);
-        const alertsData = await alertsResp.json();
+        const histResp = await fetch('../BD/listar_historico_alertas.php');
         const histData = await histResp.json();
-
-        if (alertsData && alertsData.success) renderAlerts(alertsData.alertas || []);
-        else renderAlerts([]);
 
         if (histData && histData.success) renderHistory(histData.historico || []);
         else renderHistory([]);
       } catch (err) {
-        const a = document.getElementById('alerts-items'); if (a) a.innerHTML = '<p style="color:red;">Erro ao carregar alertas.</p>';
         const h = document.getElementById('history-items'); if (h) h.innerHTML = '<p style="color:red;">Erro ao carregar histórico.</p>';
       }
     }
 
     // primeira carga
-    loadAlertsAndHistory();
-    // polling a cada 5s
-    window._alertsInterval = setInterval(loadAlertsAndHistory, 5000);
+    loadHistory();
+    // polling a cada 5s (para atualizar automaticamente se houver novos registos)
+    window._historyInterval = setInterval(loadHistory, 5000);
   });
 }
+
 
 carregarMapa();
 

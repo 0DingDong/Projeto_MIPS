@@ -4,6 +4,9 @@ $username = "root";
 $password = "";
 $dbname = "mips_local";   // <- ESTA É A BD CERTA
 
+// Definir timezone para Portugal (WET/WEST)
+date_default_timezone_set('Europe/Lisbon');
+
 // Receber estado da porta (esperado: 'aberta' ou 'fechada')
 $estado = isset($_GET['estado']) ? $_GET['estado'] : null; // 'aberta' ou 'fechada'
 

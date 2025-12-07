@@ -1,6 +1,9 @@
 <?php
 header('Content-Type: application/json');
 
+// Definir timezone para Portugal (WET/WEST)
+date_default_timezone_set('Europe/Lisbon');
+
 $historyFile = __DIR__ . '/historico_alertas.json';
 if (!file_exists($historyFile)) {
     echo json_encode(['success' => true, 'historico' => []]);
@@ -9,6 +12,9 @@ if (!file_exists($historyFile)) {
 
 $history = json_decode(file_get_contents($historyFile), true);
 if (!is_array($history)) $history = [];
+
+// Inverter array para mostrar os mais recentes primeiro
+$history = array_reverse($history);
 
 // Normalize output
 $out = [];
