@@ -385,13 +385,92 @@ if (pedirSala && conteudo) {
 const alertas = document.getElementById('alertas');
 if (alertas && conteudo) {
   alertas.addEventListener('click', () => {
+    // limpar qualquer polling anterior
+    if (window._alertsInterval) { clearInterval(window._alertsInterval); window._alertsInterval = null; }
+
     const contentEl = document.createElement('div');
     contentEl.className = 'secao';
     contentEl.innerHTML = `
       <h2>Alertas</h2>
-      <p>Aqui serão exibidos os alertas relevantes para a equipa de segurança.</p>
+      <div class="alerts-wrapper" style="display:flex;gap:20px;align-items:flex-start;">
+        <div class="alerts-list" style="flex:1;">
+          <h3>Alertas Ativas</h3>
+          <div id="alerts-items">A carregar alertas...</div>
+        </div>
+        <div class="alerts-history" style="flex:1;max-width:520px;">
+          <h3>Histórico de Alertas</h3>
+          <div id="history-items">A carregar histórico...</div>
+        </div>
+      </div>
     `;
+
     hideAccountDetailsAndShowContent(contentEl);
+
+    // Render helpers
+    function renderAlerts(list) {
+      const container = document.getElementById('alerts-items');
+      if (!container) return;
+      if (!list || list.length === 0) {
+        container.innerHTML = '<p>Nenhum alerta ativo.</p>';
+        return;
+      }
+      let html = '<ul style="list-style:none;padding:0;margin:0;">';
+      list.forEach(a => {
+        html += `<li style="background:#fff;padding:10px;border-radius:8px;margin-bottom:10px;box-shadow:0 2px 6px rgba(0,0,0,0.03);">
+                    <div style="font-weight:600">${a.sala || ''}</div>
+                    <div style="color:#374151;margin-top:4px">${a.mensagem || ''}</div>
+                    <div style="color:#6b7280;font-size:0.9rem;margin-top:6px">Aberto em: ${a.opened_at || ''}</div>
+                  </li>`;
+      });
+      html += '</ul>';
+      container.innerHTML = html;
+    }
+
+    function renderHistory(list) {
+      const container = document.getElementById('history-items');
+      if (!container) return;
+      if (!list || list.length === 0) {
+        container.innerHTML = '<p>Nenhum histórico disponível.</p>';
+        return;
+      }
+      let html = `<table style="width:100%;border-collapse:collapse;">
+                    <thead><tr style="text-align:left;color:#374151;"><th style="padding:6px 8px">Sala</th><th style="padding:6px 8px">Aberto</th><th style="padding:6px 8px">Fechado</th></tr></thead><tbody>`;
+      list.forEach(h => {
+        html += `<tr style="background:#fff;border-radius:6px;margin-bottom:8px;">
+                   <td style="padding:8px">${h.sala || ''}</td>
+                   <td style="padding:8px">${h.opened_at || ''}</td>
+                   <td style="padding:8px">${h.closed_at || ''}</td>
+                 </tr>`;
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    // Fetch functions
+    async function loadAlertsAndHistory() {
+      try {
+        const [alertsResp, histResp] = await Promise.all([
+          fetch('../BD/listar_alertas.php'),
+          fetch('../BD/listar_historico_alertas.php')
+        ]);
+        const alertsData = await alertsResp.json();
+        const histData = await histResp.json();
+
+        if (alertsData && alertsData.success) renderAlerts(alertsData.alertas || []);
+        else renderAlerts([]);
+
+        if (histData && histData.success) renderHistory(histData.historico || []);
+        else renderHistory([]);
+      } catch (err) {
+        const a = document.getElementById('alerts-items'); if (a) a.innerHTML = '<p style="color:red;">Erro ao carregar alertas.</p>';
+        const h = document.getElementById('history-items'); if (h) h.innerHTML = '<p style="color:red;">Erro ao carregar histórico.</p>';
+      }
+    }
+
+    // primeira carga
+    loadAlertsAndHistory();
+    // polling a cada 5s
+    window._alertsInterval = setInterval(loadAlertsAndHistory, 5000);
   });
 }
 
