@@ -727,23 +727,23 @@ function carregarMapa() {
 
     if (index === 0) {
       addSalas([
-        { nome: "F210", top: "30%", left: "40%" },
-        { nome: "F211", top: "42%", left: "40%" },
-        { nome: "F212", top: "60%", left: "45%" },
-        { nome: "F212A", top: "31%", left: "55%" },
-        { nome: "F212B", top: "49%", left: "55%" },
+        { nome: "F210", top: "30%", left: "45%" },
+        { nome: "F211", top: "43%", left: "45%" },
+        { nome: "F212", top: "63%", left: "53%" },
+        { nome: "F212A", top: "31%", left: "60%" },
+        { nome: "F212B", top: "50%", left: "62%" },
       ]);
     } else {
       addSalas([
-        { nome: "F311", top: "9%", left: "40%" },
-        { nome: "F313", top: "20%", left: "40%" },
-        { nome: "F315", top: "35%", left: "40%" },
-        { nome: "F317", top: "50%", left: "40%" },
-        { nome: "F319", top: "67%", left: "40%" },
-        { nome: "F314A", top: "16.5%", left: "55%" },
-        { nome: "F316", top: "34%", left: "55%" },
-        { nome: "F318", top: "49%", left: "55%" },
-        { nome: "F320", top: "67%", left: "55%" },
+        { nome: "F311", top: "10%", left: "45%" },
+        { nome: "F313", top: "21%", left: "45%" },
+        { nome: "F315", top: "36%", left: "45%" },
+        { nome: "F317", top: "51%", left: "45%" },
+        { nome: "F319", top: "68%", left: "45%" },
+        { nome: "F314A", top: "17%", left: "60%" },
+        { nome: "F316", top: "35%", left: "60%" },
+        { nome: "F318", top: "50%", left: "60%" },
+        { nome: "F320", top: "68%", left: "60%" },
       ]);
     }
   };
