@@ -411,19 +411,28 @@ body {
    um tooltip com o horário quando o rato passa por cima. */
 .sala {
   position: absolute;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
-  background: rgba(59, 130, 246, 0.3);
-  border: 2px solid rgba(59, 130, 246, 0.6);
+  background: rgb(218, 197, 133);
+  border: 2px solid rgb(180, 160, 100);
   border-radius: 8px;
   transition: transform 0.2s ease, background 0.3s ease;
   transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgb(100, 80, 40);
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .sala:hover {
   transform: translate(-50%, -50%) scale(1.1);
-  background: rgba(59, 130, 246, 0.6);
+  background: rgb(218, 197, 133);
+  color: rgba(100, 80, 40, 0);
 }
 
 .tooltip {

@@ -727,11 +727,11 @@ function carregarMapa() {
 
     if (index === 0) {
       addSalas([
-        { nome: "F210", top: "32%", left: "14.67%" },
-        { nome: "F211", top: "42.5%", left: "14.67%" },
+        { nome: "F210", top: "30%", left: "16.5%" },
+        { nome: "F211", top: "40.5%", left: "16.5%" },
         { nome: "F212", top: "60%", left: "41.44%" },
         { nome: "F212A", top: "31%", left: "76.5%" },
-        { nome: "F212B", top: "51%", left: "77.15%" },
+        { nome: "F212B", top: "50.5%", left: "78.5%" },
       ]);
     } else {
       addSalas([
@@ -755,6 +755,7 @@ function carregarMapa() {
       const div = document.createElement("div");
       div.classList.add("sala");
       div.dataset.nome = sala.nome;
+      div.textContent = sala.nome;
       div.style.top = sala.top;
       div.style.left = sala.left;
       wrapper.appendChild(div);
