@@ -176,109 +176,217 @@ if (salasLivres && conteudo) {
   });
 }
 
-// Handler para 'Procurar' (pesquisar reservas por sala)
+// Handler para 'Procurar' (pesquisar reservas por sala para professor, alertas por sala para segurança)
 if (procurar && conteudo) {
   procurar.addEventListener('click', async (e) => {
     e.preventDefault();
-    console.log('procurar clicked');
-    const contentEl = document.createElement('div');
-    contentEl.className = 'secao';
-    contentEl.innerHTML = `
-      <h2>Pesquisar Reservas por Sala</h2>
-      <p>Selecione uma sala para ver todas as suas reservas.</p>
-      <div class="pesquisa-container">
-        <label for="sala-pesquisa">Selecione a Sala:</label>
-        <div class="sala-autocomplete-wrapper">
-          <input type="text" id="sala-pesquisa" placeholder="Ex: F231" autocomplete="off">
-          <ul id="sala-pesquisa-suggestions" class="sala-suggestions hidden"></ul>
+    const page = (document.body && document.body.dataset && document.body.dataset.page) ? document.body.dataset.page : '';
+    
+    if (page === 'seguranca') {
+      // ===== HANDLER PARA SEGURANÇA: PESQUISAR ALERTAS POR SALA =====
+      const contentEl = document.createElement('div');
+      contentEl.className = 'secao';
+      contentEl.innerHTML = `
+        <h2>Pesquisar Alertas por Sala</h2>
+        <p>Selecione uma sala para ver todos os seus alertas históricos.</p>
+        <div class="pesquisa-container">
+          <label for="sala-pesquisa-seg">Selecione a Sala:</label>
+          <div class="sala-autocomplete-wrapper">
+            <input type="text" id="sala-pesquisa-seg" placeholder="Ex: F315" autocomplete="off">
+            <ul id="sala-pesquisa-seg-suggestions" class="sala-suggestions hidden"></ul>
+          </div>
         </div>
-      </div>
-      <div id="pesquisa-resultado" style="margin-top: 30px;"></div>
-    `;
-    hideAccountDetailsAndShowContent(contentEl);
+        <div id="pesquisa-resultado-seg" style="margin-top: 30px;"></div>
+      `;
+      hideAccountDetailsAndShowContent(contentEl);
 
-    // Carregar lista de salas
-    let salasList = [];
-    try {
-      const salaResponse = await fetch('../BD/listar_salas.php');
-      const salaData = await salaResponse.json();
-      if (salaData.success) {
-        salasList = salaData.salas;
+      // Carregar lista de salas
+      let salasList = [];
+      try {
+        const salaResponse = await fetch('../BD/listar_salas.php');
+        const salaData = await salaResponse.json();
+        if (salaData.success) {
+          salasList = salaData.salas;
+        }
+      } catch (error) {
+        console.error('Erro ao carregar salas:', error);
       }
-    } catch (error) {
-      console.error('Erro ao carregar salas:', error);
-    }
 
-    // Configurar autocomplete
-    const salaPesquisaInput = document.getElementById('sala-pesquisa');
-    const salaPesquisaSuggestions = document.getElementById('sala-pesquisa-suggestions');
-    const pesquisaResultado = document.getElementById('pesquisa-resultado');
+      // Configurar autocomplete
+      const salaPesquisaInput = document.getElementById('sala-pesquisa-seg');
+      const salaPesquisaSuggestions = document.getElementById('sala-pesquisa-seg-suggestions');
+      const pesquisaResultado = document.getElementById('pesquisa-resultado-seg');
 
-    const showSalas = (filtered) => {
-      salaPesquisaSuggestions.innerHTML = '';
-      if (filtered.length > 0) {
-        filtered.forEach(sala => {
-          const li = document.createElement('li');
-          li.textContent = sala.num;
-          li.addEventListener('click', async () => {
-            salaPesquisaInput.value = sala.num;
-            salaPesquisaSuggestions.classList.add('hidden');
-            
-            // Buscar reservas dessa sala
-            pesquisaResultado.innerHTML = '<p>A carregar reservas...</p>';
-            try {
-              const resResponse = await fetch('../BD/buscar_reservas_por_sala.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `sala_id=${sala.id}`
-              });
-              const resData = await resResponse.json();
+      const showSalas = (filtered) => {
+        salaPesquisaSuggestions.innerHTML = '';
+        if (filtered.length > 0) {
+          filtered.forEach(sala => {
+            const li = document.createElement('li');
+            li.textContent = sala.num;
+            li.addEventListener('click', async () => {
+              salaPesquisaInput.value = sala.num;
+              salaPesquisaSuggestions.classList.add('hidden');
               
-              if (resData.success && resData.reservas.length > 0) {
-                let html = `<h3>Reservas da Sala ${sala.num}</h3><table style="width: 100%; border-collapse: collapse; margin-top: 15px;">`;
-                html += `<tr style="background: #f0f0f0;"><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Professor</th><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Data</th><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Hora Início</th><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Hora Fim</th></tr>`;
-                resData.reservas.forEach(res => {
-                  html += `<tr style="border: 1px solid #ddd;"><td style="padding: 10px;">${res.pessoa_nome}</td><td style="padding: 10px;">${res.data}</td><td style="padding: 10px;">${res.hora_inicio}</td><td style="padding: 10px;">${res.hora_fim}</td></tr>`;
+              // Buscar alertas dessa sala
+              pesquisaResultado.innerHTML = '<p>A carregar alertas...</p>';
+              try {
+                const alertResponse = await fetch('../BD/buscar_alertas_por_sala.php', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  body: `sala=${encodeURIComponent(sala.num)}`
                 });
-                html += `</table>`;
-                pesquisaResultado.innerHTML = html;
-              } else {
-                pesquisaResultado.innerHTML = `<p style="color: #666;">Nenhuma reserva encontrada para a sala ${sala.num}.</p>`;
+                const alertData = await alertResponse.json();
+                
+                if (alertData.success && alertData.alertas.length > 0) {
+                  let html = `<h3>Alertas da Sala ${sala.num}</h3><table style="width: 100%; border-collapse: collapse; margin-top: 15px;">`;
+                  html += `<tr style="background: #f0f0f0;"><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Mensagem</th><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Aberto</th><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Fechado</th></tr>`;
+                  alertData.alertas.forEach(alert => {
+                    const openedFormatted = formatDateTime(alert.opened_at);
+                    const closedFormatted = formatDateTime(alert.closed_at);
+                    html += `<tr style="border: 1px solid #ddd;"><td style="padding: 10px;">${alert.mensagem}</td><td style="padding: 10px;">${openedFormatted}</td><td style="padding: 10px;">${closedFormatted}</td></tr>`;
+                  });
+                  html += `</table>`;
+                  pesquisaResultado.innerHTML = html;
+                } else {
+                  pesquisaResultado.innerHTML = `<p style="color: #666;">Nenhum alerta encontrado para a sala ${sala.num}.</p>`;
+                }
+              } catch (error) {
+                pesquisaResultado.innerHTML = `<p style="color: red;">Erro ao carregar alertas: ${error.message}</p>`;
               }
-            } catch (error) {
-              pesquisaResultado.innerHTML = `<p style="color: red;">Erro ao carregar reservas: ${error.message}</p>`;
-            }
+            });
+            salaPesquisaSuggestions.appendChild(li);
           });
-          salaPesquisaSuggestions.appendChild(li);
-        });
-        salaPesquisaSuggestions.classList.remove('hidden');
-      } else {
-        salaPesquisaSuggestions.classList.add('hidden');
-      }
-    };
+          salaPesquisaSuggestions.classList.remove('hidden');
+        } else {
+          salaPesquisaSuggestions.classList.add('hidden');
+        }
+      };
 
-    const filterSalas = (query) => {
-      if (!query.trim()) {
+      const filterSalas = (query) => {
+        if (!query.trim()) {
+          showSalas(salasList);
+          return;
+        }
+        const filtered = salasList.filter(s => s.num.toLowerCase().includes(query.toLowerCase()));
+        showSalas(filtered);
+      };
+
+      // Mostrar todas as salas imediatamente ao focar
+      salaPesquisaInput.addEventListener('focus', () => {
         showSalas(salasList);
-        return;
+      });
+
+      salaPesquisaInput.addEventListener('input', (e) => {
+        filterSalas(e.target.value);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (e.target !== salaPesquisaInput && !salaPesquisaSuggestions.contains(e.target)) {
+          salaPesquisaSuggestions.classList.add('hidden');
+        }
+      });
+    } else {
+      // ===== HANDLER PARA PROFESSOR: PESQUISAR RESERVAS POR SALA =====
+      const contentEl = document.createElement('div');
+      contentEl.className = 'secao';
+      contentEl.innerHTML = `
+        <h2>Pesquisar Reservas por Sala</h2>
+        <p>Selecione uma sala para ver todas as suas reservas.</p>
+        <div class="pesquisa-container">
+          <label for="sala-pesquisa">Selecione a Sala:</label>
+          <div class="sala-autocomplete-wrapper">
+            <input type="text" id="sala-pesquisa" placeholder="Ex: F231" autocomplete="off">
+            <ul id="sala-pesquisa-suggestions" class="sala-suggestions hidden"></ul>
+          </div>
+        </div>
+        <div id="pesquisa-resultado" style="margin-top: 30px;"></div>
+      `;
+      hideAccountDetailsAndShowContent(contentEl);
+
+      // Carregar lista de salas
+      let salasList = [];
+      try {
+        const salaResponse = await fetch('../BD/listar_salas.php');
+        const salaData = await salaResponse.json();
+        if (salaData.success) {
+          salasList = salaData.salas;
+        }
+      } catch (error) {
+        console.error('Erro ao carregar salas:', error);
       }
-      const filtered = salasList.filter(s => s.num.toLowerCase().includes(query.toLowerCase()));
-      showSalas(filtered);
-    };
 
-    salaPesquisaInput.addEventListener('focus', () => {
-      filterSalas(salaPesquisaInput.value);
-    });
+      // Configurar autocomplete
+      const salaPesquisaInput = document.getElementById('sala-pesquisa');
+      const salaPesquisaSuggestions = document.getElementById('sala-pesquisa-suggestions');
+      const pesquisaResultado = document.getElementById('pesquisa-resultado');
 
-    salaPesquisaInput.addEventListener('input', (e) => {
-      filterSalas(e.target.value);
-    });
+      const showSalas = (filtered) => {
+        salaPesquisaSuggestions.innerHTML = '';
+        if (filtered.length > 0) {
+          filtered.forEach(sala => {
+            const li = document.createElement('li');
+            li.textContent = sala.num;
+            li.addEventListener('click', async () => {
+              salaPesquisaInput.value = sala.num;
+              salaPesquisaSuggestions.classList.add('hidden');
+              
+              // Buscar reservas dessa sala
+              pesquisaResultado.innerHTML = '<p>A carregar reservas...</p>';
+              try {
+                const resResponse = await fetch('../BD/buscar_reservas_por_sala.php', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                  body: `sala_id=${sala.id}`
+                });
+                const resData = await resResponse.json();
+                
+                if (resData.success && resData.reservas.length > 0) {
+                  let html = `<h3>Reservas da Sala ${sala.num}</h3><table style="width: 100%; border-collapse: collapse; margin-top: 15px;">`;
+                  html += `<tr style="background: #f0f0f0;"><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Professor</th><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Data</th><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Hora Início</th><th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Hora Fim</th></tr>`;
+                  resData.reservas.forEach(res => {
+                    html += `<tr style="border: 1px solid #ddd;"><td style="padding: 10px;">${res.pessoa_nome}</td><td style="padding: 10px;">${res.data}</td><td style="padding: 10px;">${res.hora_inicio}</td><td style="padding: 10px;">${res.hora_fim}</td></tr>`;
+                  });
+                  html += `</table>`;
+                  pesquisaResultado.innerHTML = html;
+                } else {
+                  pesquisaResultado.innerHTML = `<p style="color: #666;">Nenhuma reserva encontrada para a sala ${sala.num}.</p>`;
+                }
+              } catch (error) {
+                pesquisaResultado.innerHTML = `<p style="color: red;">Erro ao carregar reservas: ${error.message}</p>`;
+              }
+            });
+            salaPesquisaSuggestions.appendChild(li);
+          });
+          salaPesquisaSuggestions.classList.remove('hidden');
+        } else {
+          salaPesquisaSuggestions.classList.add('hidden');
+        }
+      };
 
-    document.addEventListener('click', (e) => {
-      if (e.target !== salaPesquisaInput && !salaPesquisaSuggestions.contains(e.target)) {
-        salaPesquisaSuggestions.classList.add('hidden');
-      }
-    });
+      const filterSalas = (query) => {
+        if (!query.trim()) {
+          showSalas(salasList);
+          return;
+        }
+        const filtered = salasList.filter(s => s.num.toLowerCase().includes(query.toLowerCase()));
+        showSalas(filtered);
+      };
+
+      // Mostrar todas as salas imediatamente ao focar
+      salaPesquisaInput.addEventListener('focus', () => {
+        showSalas(salasList);
+      });
+
+      salaPesquisaInput.addEventListener('input', (e) => {
+        filterSalas(e.target.value);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (e.target !== salaPesquisaInput && !salaPesquisaSuggestions.contains(e.target)) {
+          salaPesquisaSuggestions.classList.add('hidden');
+        }
+      });
+    }
   });
 }
 
