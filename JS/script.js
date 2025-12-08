@@ -5,6 +5,28 @@ if (sidebarClose && sidebar) {
   sidebarClose.addEventListener("click", () => sidebar.classList.toggle("close"));
 }
 
+// Função auxiliar para formatar data e hora
+function formatDateTime(dateTimeStr) {
+  if (!dateTimeStr) return '';
+  
+  // Tentar fazer parse da data
+  const date = new Date(dateTimeStr);
+  
+  // Verificar se a data é válida
+  if (isNaN(date.getTime())) return dateTimeStr;
+  
+  // Formatar data como dd/mm/yyyy
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  
+  // Formatar hora como hh:mm
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+  return `${day}/${month}/${year} às ${hours}:${minutes}`;
+}
+
 // Elementos do menu
 const conteudo = document.getElementById("conteudo");
 const verMapa = document.getElementById("verMapa");
@@ -131,7 +153,7 @@ if (salasLivres && conteudo) {
               <td class="col-sala">${reserva.sala_num}</td>
               <td class="col-prof">${reserva.pessoa_nome}</td>
               <td class="col-data">${reserva.data}</td>
-              <td class="col-hora">${reserva.hora_inicio} - ${reserva.hora_fim}</td>
+              <td class="col-hora" style="white-space: nowrap;">${reserva.hora_inicio} - ${reserva.hora_fim}</td>
               <td class="col-actions"><button class="cancel-reservation" data-reserva-id="${reserva.reserva_id}">Cancelar</button></td>
             </tr>
           `;
@@ -407,10 +429,11 @@ if (alertas && conteudo) {
       }
       let html = '<ul style="list-style:none;padding:0;margin:0;">';
       list.forEach(a => {
+        const formattedDate = formatDateTime(a.opened_at);
         html += `<li style="background:#fff;padding:12px;border-radius:8px;margin-bottom:10px;box-shadow:0 2px 6px rgba(0,0,0,0.03);border-left:4px solid #ef4444;">
                     <div style="font-weight:600;color:#1f2937;">${a.sala || ''}</div>
                     <div style="color:#374151;margin-top:4px;font-size:0.95rem;">${a.mensagem || ''}</div>
-                    <div style="color:#6b7280;font-size:0.85rem;margin-top:6px;">Aberto em: ${a.opened_at || ''}</div>
+                    <div style="color:#6b7280;font-size:0.85rem;margin-top:6px;">Aberto em: ${formattedDate}</div>
                   </li>`;
       });
       html += '</ul>';
@@ -472,10 +495,12 @@ if (historicoAlertas && conteudo) {
                     <tbody>`;
       list.forEach((h, idx) => {
         const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
+        const openedFormatted = formatDateTime(h.opened_at);
+        const closedFormatted = formatDateTime(h.closed_at);
         html += `<tr style="background:${bgColor};border-bottom:1px solid #e5e7eb;">
                    <td style="padding:10px 12px;color:#1f2937;font-weight:500;">${h.sala || ''}</td>
-                   <td style="padding:10px 12px;color:#374151;">${h.opened_at || ''}</td>
-                   <td style="padding:10px 12px;color:#374151;">${h.closed_at || ''}</td>
+                   <td style="padding:10px 12px;color:#374151;">${openedFormatted}</td>
+                   <td style="padding:10px 12px;color:#374151;">${closedFormatted}</td>
                  </tr>`;
       });
       html += '</tbody></table>';

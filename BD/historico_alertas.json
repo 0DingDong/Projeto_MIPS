@@ -78,5 +78,21 @@
         "mensagem": "A porta F315 está aberta!",
         "opened_at": "2025-12-07 23:23:21",
         "closed_at": "2025-12-07 23:23:31"
+    },
+    {
+        "id": "1765191804926",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-08 11:03:24",
+        "closed_at": "2025-12-08 11:03:28"
+    },
+    {
+        "id": "1765191866177",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-08 11:04:26",
+        "closed_at": "2025-12-08 11:04:27"
     }
 ]

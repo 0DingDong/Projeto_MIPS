@@ -15,7 +15,7 @@ $sql = "SELECT
             r.reserva_id,
             s.sala_num,
             p.pessoa_nome,
-            DATE_FORMAT(r.reserva_Data, '%Y-%m-%d') as data,
+            DATE_FORMAT(r.reserva_Data, '%d/%m/%Y') as data,
             DATE_FORMAT(r.reserva_Data, '%H:%i') as hora_inicio,
             DATE_FORMAT(r.reserva_Data_Fim, '%H:%i') as hora_fim
         FROM reserva r
