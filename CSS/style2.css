@@ -150,11 +150,12 @@ body {
 =========================== */
 
 .navbar {
+  --navbar-height: 70px;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 70px;
+  height: var(--navbar-height);
   padding: 0 30px;
   background: rgba(249, 250, 251, 0.95);
   backdrop-filter: blur(20px);
@@ -208,6 +209,99 @@ body {
 }
 
 /* ===========================
+   BURGER MENU (MOBILE)
+=========================== */
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 8px;
+  z-index: 99;
+  gap: 5px;
+}
+
+.burger-menu span {
+  width: 25px;
+  height: 3px;
+  background: #374151;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.burger-menu.active span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.burger-menu.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-menu.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(8px, -8px);
+}
+
+#nav-menu {
+  display: flex;
+  transition: all 0.3s ease;
+}
+
+#nav-menu.mobile-active {
+  display: flex !important;
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  background: rgba(249, 250, 251, 0.98);
+  backdrop-filter: blur(20px);
+  flex-direction: column;
+  padding: 20px 0;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(209, 213, 219, 0.8);
+  max-height: calc(100vh - var(--navbar-height));
+  overflow-y: auto;
+  z-index: 97;
+}
+
+#nav-menu.mobile-active ul {
+  flex-direction: column;
+  width: 100%;
+  gap: 0;
+}
+
+#nav-menu.mobile-active li {
+  width: 100%;
+}
+
+#nav-menu.mobile-active a {
+  padding: 15px 20px;
+  border-radius: 0;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+#nav-menu.mobile-active a:hover {
+  background: rgba(59, 130, 246, 0.1);
+  padding-left: 30px;
+}
+
+/* Compact header earlier so items don't overflow before burger kicks in */
+@media (max-width: 1150px) {
+  .navbar {
+    padding: 0 20px;
+  }
+
+  .burger-menu {
+    display: flex;
+  }
+
+  .nav-menu {
+    display: none !important;
+  }
+}
+
+/* ===========================
    CONTEÚDO PRINCIPAL
 =========================== */
 .main {
@@ -215,18 +309,18 @@ body {
   left: 0;
   width: 100%;
   min-height: 100vh;
-  margin-top: 70px;
+  margin-top: var(--navbar-height);
   display: flex;
   justify-content: center;
   align-items: center;
   background: transparent;
-  padding: 40px;
+  padding: 20px;
   transition: all 0.4s ease;
 }
 
 .main h1 {
   color: #374151;
-  font-size: 40px;
+  font-size: clamp(28px, 5vw, 40px);
   text-align: center;
   text-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
 }
@@ -285,10 +379,12 @@ body {
   width: 100%;
   background: linear-gradient(145deg, #f3f4f6 0%, #e5e7eb 100%);
   border-radius: 20px;
-  padding: 30px;
+  padding: clamp(15px, 5vw, 30px);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(209, 213, 219, 0.5);
   border-top: 3px solid #3b82f6;
+  max-height: 90vh;
+  overflow: hidden;
 }
 
 .planta-wrapper {
@@ -320,10 +416,11 @@ body {
   border: 2px solid rgba(59, 130, 246, 0.6);
   border-radius: 8px;
   transition: transform 0.2s ease, background 0.3s ease;
+  transform: translate(-50%, -50%);
 }
 
 .sala:hover {
-  transform: scale(1.1);
+  transform: translate(-50%, -50%) scale(1.1);
   background: rgba(59, 130, 246, 0.6);
 }
 
@@ -360,7 +457,7 @@ body {
   background: transparent;
   color: rgba(107, 114, 128, 0.6);
   border: none;
-  font-size: 3rem;
+  font-size: clamp(1.5rem, 4vw, 3rem);
   cursor: pointer;
   padding: 10px;
   transition: all 0.3s ease;
@@ -377,11 +474,11 @@ body {
 }
 
 .seta-esquerda {
-  left: 30px;
+  left: 15px;
 }
 
 .seta-direita {
-  right: 30px;
+  right: 15px;
 }
 
 /* ===========================
@@ -389,7 +486,7 @@ body {
 =========================== */
 .secao {
   text-align: center;
-  padding: 40px;
+  padding: clamp(20px, 5vw, 40px);
   width: 100%;
   max-width: 900px;
   margin: auto;
@@ -402,7 +499,7 @@ body {
 }
 
 .secao h2 {
-  font-size: 2.2rem;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
   margin-bottom: 15px;
   color: #1f2937;
   font-weight: 700;
@@ -410,7 +507,7 @@ body {
 
 .secao p {
   color: #6b7280;
-  font-size: 1.1rem;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
   line-height: 1.6;
   margin-bottom: 20px;
 }
@@ -438,9 +535,8 @@ body {
   padding: 14px 20px;
   border-radius: 12px;
   border: 2px solid rgba(209, 213, 219, 0.6);
-  width: 80%;
-  max-width: 600px;
-  font-size: 15px;
+  width: min(90%, 600px);
+  font-size: clamp(14px, 2vw, 15px);
   transition: all 0.3s ease;
   background: rgba(249, 250, 251, 0.8);
   color: #374151;
@@ -779,89 +875,6 @@ body {
   transform: none;
 }
 
-/* ===========================
-   RESPONSIVIDADE
-=========================== */
-@media (max-width: 1024px) {
-  .sidebar {
-    width: 240px;
-  }
-
-  .navbar {
-    left: 240px;
-    width: calc(100% - 240px);
-  }
-
-  .main {
-    left: 240px;
-    width: calc(100% - 240px);
-  }
-}
-
-@media (max-width: 768px) {
-  .sidebar {
-    width: 0;
-  }
-
-  .navbar {
-    left: 0;
-    width: 100%;
-  }
-
-  .main {
-    left: 0;
-    width: 100%;
-    padding: 20px;
-  }
-
-  .descricao-inicial h1 {
-    font-size: 2rem;
-  }
-
-  .descricao-inicial {
-    padding: 25px;
-  }
-
-  .seta {
-    padding: 12px 16px;
-    font-size: 1.5rem;
-  }
-
-  .seta-esquerda {
-    left: 10px;
-  }
-
-  .seta-direita {
-    right: 10px;
-  }
-
-  .form-reserva input {
-    width: 80%;
-  }
-
-  .form-reserva label {
-    margin-left: 10%;
-  }
-}
-
-@media (max-width: 480px) {
-  .descricao-inicial h1 {
-    font-size: 1.6rem;
-  }
-
-  .descricao-inicial p {
-    font-size: 1rem;
-  }
-
-  .secao h2 {
-    font-size: 1.8rem;
-  }
-
-  .andar-texto {
-    font-size: 1.3rem;
-  }
-}
-
 /* Footer styles (copied from main.html to unify footer across pages) */
 footer {
   position: relative;
@@ -910,4 +923,277 @@ footer {
   border-top: 1px solid rgba(209, 213, 219, 0.8);
   color: #9ca3af;
   font-size: 0.9em;
+}
+
+/* ===========================
+   MEDIA QUERIES - TABLET
+=========================== */
+@media (max-width: 1024px) {
+  .navbar {
+    left: 0;
+    width: 100%;
+    padding: 0 20px;
+  }
+
+  .main {
+    left: 0;
+    width: 100%;
+  }
+
+  .planta-img {
+    max-height: 60vh;
+  }
+}
+
+/* ===========================
+   MEDIA QUERIES - MOBILE (LANDSCAPE AND PORTRAIT)
+=========================== */
+@media (max-width: 768px) {
+  body {
+    font-size: clamp(14px, 2vw, 16px);
+  }
+
+  .sidebar {
+    width: 0;
+  }
+
+  .navbar {
+    --navbar-height: 60px;
+    left: 0;
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .burger-menu {
+    display: flex;
+  }
+
+  .nav-menu {
+    display: none !important;
+  }
+
+  .logo-header {
+    height: 40px;
+  }
+
+  .nav-menu ul {
+    gap: 10px;
+  }
+
+  .nav-menu a {
+    padding: 8px 10px;
+    font-size: 0.85em;
+  }
+
+  .nav-menu a i {
+    font-size: 16px;
+  }
+
+  .main {
+    left: 0;
+    width: 100%;
+    margin-top: var(--navbar-height);
+    padding: 15px;
+  }
+
+  .descricao-inicial {
+    padding: 20px;
+    border-radius: 15px;
+  }
+
+  .descricao-inicial h1 {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    margin-bottom: 15px;
+  }
+
+  .descricao-inicial p {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+
+  .planta-container {
+    flex-direction: column;
+    padding: 15px;
+    max-height: 80vh;
+  }
+
+  .planta-wrapper {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .planta-img {
+    max-height: 50vh;
+    width: auto;
+  }
+
+  .seta {
+    font-size: clamp(1rem, 4vw, 2rem);
+    padding: 8px;
+  }
+
+  .seta-esquerda {
+    left: 10px;
+  }
+
+  .seta-direita {
+    right: 10px;
+  }
+
+  .andar-texto {
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    margin-top: 15px;
+    padding: 10px 20px;
+  }
+
+  .secao {
+    padding: clamp(15px, 4vw, 30px);
+    border-radius: 15px;
+  }
+
+  .secao h2 {
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+    margin-bottom: 10px;
+  }
+
+  .secao p {
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+
+  .form-reserva {
+    gap: 12px;
+  }
+
+  .form-reserva label {
+    margin-left: 0;
+    align-self: flex-start;
+    font-size: clamp(0.9rem, 2vw, 1rem);
+  }
+
+  .form-reserva input {
+    width: min(95%, 500px);
+    padding: 12px 15px;
+    font-size: clamp(13px, 2vw, 15px);
+  }
+
+  .form-reserva button {
+    padding: 12px 30px;
+    font-size: clamp(14px, 2vw, 16px);
+    margin-top: 15px;
+  }
+
+  .sala-autocomplete-wrapper {
+    width: min(95%, 500px);
+  }
+
+  .sala-suggestions {
+    max-height: 200px;
+  }
+
+  .reserves-table {
+    margin-top: 15px;
+  }
+
+  .reserves-table th,
+  .reserves-table td {
+    padding: 8px 10px;
+    font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+  }
+
+  .cancel-reservation {
+    padding: 6px 12px;
+    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+    min-width: 80px;
+  }
+
+  .tooltip {
+    font-size: clamp(12px, 2vw, 14px);
+    padding: 8px 10px;
+    max-width: 200px;
+  }
+
+  footer {
+    padding: 25px 15px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .footer-section h3 {
+    font-size: clamp(1rem, 3vw, 1.2em);
+  }
+
+  .footer-section p,
+  .footer-section a {
+    font-size: clamp(0.85em, 2vw, 0.95em);
+  }
+}
+
+/* ===========================
+   MEDIA QUERIES - SMALL MOBILE (< 480px)
+=========================== */
+@media (max-width: 480px) {
+  .navbar {
+    --navbar-height: 55px;
+    padding: 0 10px;
+  }
+
+  .nav-menu ul {
+    gap: 5px;
+  }
+
+  .nav-menu a {
+    padding: 6px 8px;
+    font-size: 0.8em;
+  }
+
+  .nav-menu a i {
+    font-size: 14px;
+  }
+
+  .main {
+    margin-top: var(--navbar-height);
+    padding: 10px;
+  }
+
+  .descricao-inicial {
+    padding: 15px;
+    margin: 0;
+  }
+
+  .planta-container {
+    padding: 10px;
+  }
+
+  .planta-img {
+    max-height: 45vh;
+  }
+
+  .form-reserva input {
+    width: 95%;
+  }
+
+  .sala-autocomplete-wrapper {
+    width: 95%;
+  }
+
+  .sala-suggestions li {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .reserves-table {
+    overflow-x: auto;
+  }
+
+  .reserves-table th,
+  .reserves-table td {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  footer {
+    padding: 20px 10px;
+  }
 }

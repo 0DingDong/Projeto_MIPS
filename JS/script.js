@@ -1,3 +1,31 @@
+// Burger menu toggle
+const burgerToggle = document.getElementById('burger-toggle');
+const navMenu = document.getElementById('nav-menu');
+
+if (burgerToggle && navMenu) {
+  burgerToggle.addEventListener('click', () => {
+    burgerToggle.classList.toggle('active');
+    navMenu.classList.toggle('mobile-active');
+  });
+
+  // Fechar menu ao clicar num link
+  const navLinks = navMenu.querySelectorAll('a');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      burgerToggle.classList.remove('active');
+      navMenu.classList.remove('mobile-active');
+    });
+  });
+
+  // Fechar menu ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (!burgerToggle.contains(e.target) && !navMenu.contains(e.target)) {
+      burgerToggle.classList.remove('active');
+      navMenu.classList.remove('mobile-active');
+    }
+  });
+}
+
 // Sidebar toggle
 const sidebar = document.querySelector(".sidebar");
 const sidebarClose = document.querySelector("#sidebar-close");
@@ -536,7 +564,7 @@ if (alertas && conteudo) {
     const contentEl = document.createElement('div');
     contentEl.className = 'secao';
     contentEl.innerHTML = `
-      <h2>Alertas Ativas</h2>
+      <h2>Alertas Ativos</h2>
       <div id="alerts-items">A carregar alertas...</div>
     `;
 
@@ -699,23 +727,23 @@ function carregarMapa() {
 
     if (index === 0) {
       addSalas([
-        { nome: "F210", top: "31%", left: "42.5%" },
-        { nome: "F211", top: "41%", left: "42.5%" },
-        { nome: "F212", top: "61%", left: "47%" },
-        { nome: "F212A", top: "33%", left: "53.5%" },
-        { nome: "F212B", top: "50.5%", left: "54%" },
+        { nome: "F210", top: "30%", left: "40%" },
+        { nome: "F211", top: "42%", left: "40%" },
+        { nome: "F212", top: "60%", left: "45%" },
+        { nome: "F212A", top: "31%", left: "55%" },
+        { nome: "F212B", top: "49%", left: "55%" },
       ]);
     } else {
       addSalas([
-        { nome: "F311", top: "10%", left: "42.5%" },
-        { nome: "F313", top: "20%", left: "42.5%" },
-        { nome: "F315", top: "35%", left: "42.5%" },
-        { nome: "F317", top: "50%", left: "42.5%" },
-        { nome: "F319", top: "67%", left: "42.5%" },
-        { nome: "F314A", top: "16.5%", left: "54%" },
-        { nome: "F316", top: "35%", left: "54%" },
-        { nome: "F318", top: "50%", left: "54%" },
-        { nome: "F320", top: "67%", left: "54%" },
+        { nome: "F311", top: "9%", left: "40%" },
+        { nome: "F313", top: "20%", left: "40%" },
+        { nome: "F315", top: "35%", left: "40%" },
+        { nome: "F317", top: "50%", left: "40%" },
+        { nome: "F319", top: "67%", left: "40%" },
+        { nome: "F314A", top: "16.5%", left: "55%" },
+        { nome: "F316", top: "34%", left: "55%" },
+        { nome: "F318", top: "49%", left: "55%" },
+        { nome: "F320", top: "67%", left: "55%" },
       ]);
     }
   };
