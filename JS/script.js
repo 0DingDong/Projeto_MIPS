@@ -276,6 +276,11 @@ if (procurar && conteudo) {
         showSalas(salasList);
       });
 
+      // Mostrar todas as salas ao clicar
+      salaPesquisaInput.addEventListener('click', () => {
+        showSalas(salasList);
+      });
+
       salaPesquisaInput.addEventListener('input', (e) => {
         filterSalas(e.target.value);
       });
@@ -377,6 +382,11 @@ if (procurar && conteudo) {
         showSalas(salasList);
       });
 
+      // Mostrar todas as salas ao clicar
+      salaPesquisaInput.addEventListener('click', () => {
+        showSalas(salasList);
+      });
+
       salaPesquisaInput.addEventListener('input', (e) => {
         filterSalas(e.target.value);
       });
@@ -468,6 +478,11 @@ if (pedirSala && conteudo) {
     salaInput.addEventListener('focus', () => {
       filterSalas(salaInput.value);
     });
+
+      // Mostrar lista ao clicar no input
+      salaInput.addEventListener('click', () => {
+        filterSalas(salaInput.value);
+      });
 
     // Filtrar conforme escreve
     salaInput.addEventListener('input', (e) => {
@@ -670,23 +685,10 @@ function carregarMapa() {
   const proximo = document.getElementById("proximo");
   const tooltip = document.getElementById("tooltip");
 
-  const horarios = {
-    F210: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Disponível"],
-    F211: ["09h-10h - Ocupada", "10h-11h - Ocupada", "11h-12h - Disponível"],
-    F212: ["09h-10h - Disponível", "10h-11h - Disponível", "11h-12h - Ocupada"],
-    F212A: ["09h-10h - Ocupada", "10h-11h - Disponível", "11h-12h - Disponível"],
-    F212B: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Ocupada"],
-
-    F311: ["09h-10h - Ocupada", "10h-11h - Disponível", "11h-12h - Disponível"],
-    F313: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Disponível"],
-    F315: ["09h-10h - Disponível", "10h-11h - Ocupada", "11h-12h - Ocupada"],
-    F317: ["09h-10h - Ocupada", "10h-11h - Ocupada", "11h-12h - Disponível"],
-    F319: ["09h-10h - Disponível", "10h-11h - Disponível", "11h-12h - Ocupada"],
-    F314A: ["09h-10h - Ocupada", "10h-11h - Disponível", "11h-12h - Ocupada"],
-    F316: ["09h-10h - Ocupada", "10h-11h - Ocupada", "11h-12h - Disponível"],
-    F318: ["09h-10h - Disponível", "10h-11h - Disponível", "11h-12h - Ocupada"],
-    F320: ["09h-10h - Ocupada", "10h-11h - Ocupada", "11h-12h - Disponível"],
-  };
+  // Determinar tipo de página para saber qual endpoint usar
+  const page = (document.body && document.body.dataset && document.body.dataset.page) ? document.body.dataset.page : '';
+  const isProfessor = page === 'professor';
+  const isSeguranca = page === 'seguranca';
 
   const atualizarPlanta = () => {
     if (!plantaImagem || !andarTexto) return;
@@ -729,13 +731,64 @@ function carregarMapa() {
       div.style.left = sala.left;
       wrapper.appendChild(div);
 
-      div.addEventListener("mousemove", (e) => {
-        const info = horarios[sala.nome] ? horarios[sala.nome].join("<br>") : "Sem dados";
+      div.addEventListener("mouseenter", async (e) => {
         if (tooltip) {
-          tooltip.innerHTML = `<strong>${sala.nome}</strong><br>${info}`;
+          tooltip.innerHTML = `<strong>${sala.nome}</strong><br><em>A carregar...</em>`;
+          tooltip.style.display = "block";
+        }
+
+        // Buscar dados de acordo com o tipo de utilizador
+        try {
+          if (isProfessor) {
+            // Para professor: mostrar reservas de hoje
+            const response = await fetch(`../BD/get_sala_reservas_horas.php?sala=${encodeURIComponent(sala.nome)}`);
+            const data = await response.json();
+            
+            if (data.success && data.reservas && data.reservas.length > 0) {
+              let info = '';
+              data.reservas.forEach(res => {
+                info += `${res.hora_inicio} - ${res.hora_fim}<br>`;
+              });
+              if (tooltip) {
+                tooltip.innerHTML = `<strong>${sala.nome}</strong><br>Reservas de hoje:<br>${info}`;
+              }
+            } else {
+              if (tooltip) {
+                tooltip.innerHTML = `<strong>${sala.nome}</strong><br>Sem reservas hoje`;
+              }
+            }
+          } else if (isSeguranca) {
+            // Para segurança: mostrar último alerta
+            const response = await fetch(`../BD/get_sala_ultimo_alerta.php?sala=${encodeURIComponent(sala.nome)}`);
+            const data = await response.json();
+            
+            if (data.success && data.ultimo_alerta) {
+              const { data: dataAlerta, hora_aberto, hora_fechado } = data.ultimo_alerta;
+              if (tooltip) {
+                tooltip.innerHTML = `<strong>${sala.nome}</strong><br>Último alerta:<br>${dataAlerta}<br>${hora_aberto} - ${hora_fechado}`;
+              }
+            } else {
+              if (tooltip) {
+                tooltip.innerHTML = `<strong>${sala.nome}</strong><br>Sem alertas`;
+              }
+            }
+          } else {
+            // Para aluno: sem informação adicional
+            if (tooltip) {
+              tooltip.innerHTML = `<strong>${sala.nome}</strong>`;
+            }
+          }
+        } catch (error) {
+          if (tooltip) {
+            tooltip.innerHTML = `<strong>${sala.nome}</strong><br>Erro ao carregar dados`;
+          }
+        }
+      });
+
+      div.addEventListener("mousemove", (e) => {
+        if (tooltip) {
           tooltip.style.left = e.pageX + 15 + "px";
           tooltip.style.top = e.pageY + 15 + "px";
-          tooltip.style.display = "block";
         }
       });
 
