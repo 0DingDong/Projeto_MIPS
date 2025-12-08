@@ -391,13 +391,15 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
   max-width: 90%;
 }
 
 .planta-img {
-  width: 100%;
+  width: auto;
   height: auto;
   max-height: 70vh;
+  max-width: 100%;
   object-fit: contain;
   border-radius: 15px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
@@ -409,8 +411,8 @@ body {
    um tooltip com o horário quando o rato passa por cima. */
 .sala {
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
   background: rgba(59, 130, 246, 0.3);
   border: 2px solid rgba(59, 130, 246, 0.6);

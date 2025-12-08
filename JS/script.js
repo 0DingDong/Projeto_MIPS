@@ -727,23 +727,23 @@ function carregarMapa() {
 
     if (index === 0) {
       addSalas([
-        { nome: "F210", top: "30%", left: "45%" },
-        { nome: "F211", top: "43%", left: "45%" },
-        { nome: "F212", top: "63%", left: "53%" },
-        { nome: "F212A", top: "31%", left: "60%" },
-        { nome: "F212B", top: "50%", left: "62%" },
+        { nome: "F210", top: "32%", left: "14.67%" },
+        { nome: "F211", top: "42.5%", left: "14.67%" },
+        { nome: "F212", top: "60%", left: "41.44%" },
+        { nome: "F212A", top: "31%", left: "76.5%" },
+        { nome: "F212B", top: "51%", left: "77.15%" },
       ]);
     } else {
       addSalas([
-        { nome: "F311", top: "10%", left: "45%" },
-        { nome: "F313", top: "21%", left: "45%" },
-        { nome: "F315", top: "36%", left: "45%" },
-        { nome: "F317", top: "51%", left: "45%" },
-        { nome: "F319", top: "68%", left: "45%" },
-        { nome: "F314A", top: "17%", left: "60%" },
-        { nome: "F316", top: "35%", left: "60%" },
-        { nome: "F318", top: "50%", left: "60%" },
-        { nome: "F320", top: "68%", left: "60%" },
+        { nome: "F311", top: "8%", left: "18.45%" },
+        { nome: "F313", top: "21%", left: "19.20%" },
+        { nome: "F315", top: "34%", left: "19.20%" },
+        { nome: "F317", top: "49%", left: "17.71%" },
+        { nome: "F319", top: "65%", left: "17.71%" },
+        { nome: "F314A", top: "16%", left: "74.82%" },
+        { nome: "F316", top: "34.5%", left: "74.82%" },
+        { nome: "F318", top: "51%", left: "74.82%" },
+        { nome: "F320", top: "67%", left: "75.56%" },
       ]);
     }
   };
@@ -825,6 +825,18 @@ function carregarMapa() {
       });
     });
   };
+
+  // Helper opcional para medir coordenadas ao clicar na planta
+  if (plantaImagem && !plantaImagem.dataset.coordListener) {
+    plantaImagem.addEventListener('click', (e) => {
+      if (!window._debugCoords) return;
+      const rect = plantaImagem.getBoundingClientRect();
+      const xPct = ((e.clientX - rect.left) / rect.width) * 100;
+      const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+      console.log(`Coord percentuais -> left: ${xPct.toFixed(2)}%, top: ${yPct.toFixed(2)}%`);
+    });
+    plantaImagem.dataset.coordListener = 'true';
+  }
 
   if (plantaImagem && anterior && proximo && andarTexto) {
     anterior.addEventListener("click", () => {
