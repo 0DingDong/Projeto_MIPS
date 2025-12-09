@@ -92,6 +92,10 @@ function ensureAccountDetails() {
 
 let originalMainHTML = null;
 
+// seleção de sala para destacar no mapa
+window._selectedSala = null;
+window._selectedAndar = null;
+
 function hideSiblings(mainEl, keepId = 'account-details') {
   Array.from(mainEl.children).forEach((child) => {
     if (child.id !== keepId) child.style.display = 'none';
@@ -209,7 +213,7 @@ if (procurar && conteudo) {
   procurar.addEventListener('click', async (e) => {
     e.preventDefault();
     const page = (document.body && document.body.dataset && document.body.dataset.page) ? document.body.dataset.page : '';
-    
+
     if (page === 'seguranca') {
       // ===== HANDLER PARA SEGURANÇA: PESQUISAR ALERTAS POR SALA =====
       const contentEl = document.createElement('div');
@@ -318,6 +322,78 @@ if (procurar && conteudo) {
           salaPesquisaSuggestions.classList.add('hidden');
         }
       });
+    } else if (page === 'aluno') {
+      // ===== HANDLER PARA ALUNO: PESQUISAR E IR PARA O MAPA DESTACANDO A SALA =====
+      const contentEl = document.createElement('div');
+      contentEl.className = 'secao';
+      contentEl.innerHTML = `
+        <h2>Pesquisar Sala e abrir mapa</h2>
+        <p>Escolhe a sala para abrir o mapa automaticamente no andar correto e com o marcador em destaque.</p>
+        <div class="pesquisa-container">
+          <label for="sala-pesquisa-aluno">Selecione a Sala:</label>
+          <div class="sala-autocomplete-wrapper">
+            <input type="text" id="sala-pesquisa-aluno" placeholder="Ex: F210" autocomplete="off">
+            <ul id="sala-pesquisa-aluno-suggestions" class="sala-suggestions hidden"></ul>
+          </div>
+        </div>
+      `;
+      hideAccountDetailsAndShowContent(contentEl);
+
+      let salasList = [];
+      try {
+        const salaResponse = await fetch('../BD/listar_salas.php');
+        const salaData = await salaResponse.json();
+        if (salaData.success) {
+          salasList = salaData.salas;
+        }
+      } catch (error) {
+        console.error('Erro ao carregar salas:', error);
+      }
+
+      const salaPesquisaInput = document.getElementById('sala-pesquisa-aluno');
+      const salaPesquisaSuggestions = document.getElementById('sala-pesquisa-aluno-suggestions');
+
+      const showSalas = (filtered) => {
+        salaPesquisaSuggestions.innerHTML = '';
+        if (filtered.length > 0) {
+          filtered.forEach(sala => {
+            const li = document.createElement('li');
+            li.textContent = sala.num;
+            li.addEventListener('click', () => {
+              salaPesquisaInput.value = sala.num;
+              salaPesquisaSuggestions.classList.add('hidden');
+
+              // definir seleção para o mapa e renderizar
+              window._selectedSala = sala.num;
+              window._selectedAndar = sala.num.startsWith('F3') ? 1 : 0;
+              renderMapaView();
+            });
+            salaPesquisaSuggestions.appendChild(li);
+          });
+          salaPesquisaSuggestions.classList.remove('hidden');
+        } else {
+          salaPesquisaSuggestions.classList.add('hidden');
+        }
+      };
+
+      const filterSalas = (query) => {
+        if (!query.trim()) {
+          showSalas(salasList);
+          return;
+        }
+        const filtered = salasList.filter(s => s.num.toLowerCase().includes(query.toLowerCase()));
+        showSalas(filtered);
+      };
+
+      salaPesquisaInput.addEventListener('focus', () => showSalas(salasList));
+      salaPesquisaInput.addEventListener('click', () => showSalas(salasList));
+      salaPesquisaInput.addEventListener('input', (e) => filterSalas(e.target.value));
+      document.addEventListener('click', (ev) => {
+        if (ev.target !== salaPesquisaInput && !salaPesquisaSuggestions.contains(ev.target)) {
+          salaPesquisaSuggestions.classList.add('hidden');
+        }
+      });
+
     } else {
       // ===== HANDLER PARA PROFESSOR: PESQUISAR RESERVAS POR SALA =====
       const contentEl = document.createElement('div');
@@ -682,22 +758,29 @@ if (historicoAlertas && conteudo) {
 carregarMapa();
 
 // Handler para 'Ver Mapa'
+function renderMapaView() {
+  const mapEl = document.createElement('div');
+  mapEl.className = 'planta-container';
+  mapEl.innerHTML = `
+    <button class="seta seta-esquerda" id="anterior">&#10094;</button>
+    <div class="planta-wrapper">
+      <img id="plantaImagem" src="../Img/planta2.png" alt="Planta Andar 2" class="planta-img">
+      <div id="andarTexto" class="andar-texto">Andar 2</div>
+      <div id="tooltip" class="tooltip"></div>
+    </div>
+    <button class="seta seta-direita" id="proximo">&#10095;</button>
+  `;
+
+  hideAccountDetailsAndShowContent(mapEl);
+  carregarMapa();
+}
+
 if (verMapa && conteudo) {
   verMapa.addEventListener("click", () => {
-    const mapEl = document.createElement('div');
-    mapEl.className = 'planta-container';
-    mapEl.innerHTML = `
-      <button class="seta seta-esquerda" id="anterior">&#10094;</button>
-      <div class="planta-wrapper">
-        <img id="plantaImagem" src="../Img/planta2.png" alt="Planta Andar 2" class="planta-img">
-        <div id="andarTexto" class="andar-texto">Andar 2</div>
-        <div id="tooltip" class="tooltip"></div>
-      </div>
-      <button class="seta seta-direita" id="proximo">&#10095;</button>
-    `;
-
-    hideAccountDetailsAndShowContent(mapEl);
-    carregarMapa();
+    // reset seleção manual do utilizador
+    window._selectedSala = null;
+    window._selectedAndar = null;
+    renderMapaView();
   });
 }
 
@@ -705,7 +788,7 @@ if (verMapa && conteudo) {
 function carregarMapa() {
   const imagens = ["../Img/planta2.png", "../Img/planta3.png"];
   const andares = ["Andar 2", "Andar 3"];
-  let index = 0;
+  let index = (typeof window._selectedAndar === 'number') ? window._selectedAndar : 0;
 
   const plantaImagem = document.getElementById("plantaImagem");
   const andarTexto = document.getElementById("andarTexto");
@@ -746,6 +829,16 @@ function carregarMapa() {
         { nome: "F320", top: "67%", left: "75.56%" },
       ]);
     }
+
+    // Re-aplicar destaque após trocar andar, se existe seleção ativa
+    if (window._selectedSala) {
+      const allSalas = document.querySelectorAll('.sala');
+      allSalas.forEach(s => {
+        if (s.dataset.nome === window._selectedSala) {
+          s.classList.add('sala-highlight');
+        }
+      });
+    }
   };
 
   const addSalas = (salas) => {
@@ -758,6 +851,9 @@ function carregarMapa() {
       div.textContent = sala.nome;
       div.style.top = sala.top;
       div.style.left = sala.left;
+      if (window._selectedSala && window._selectedSala === sala.nome) {
+        div.classList.add('sala-highlight');
+      }
       wrapper.appendChild(div);
 
       div.addEventListener("mouseenter", async (e) => {

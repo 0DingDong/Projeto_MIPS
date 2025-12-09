@@ -435,6 +435,28 @@ body {
   color: rgba(100, 80, 40, 0);
 }
 
+.sala-highlight {
+  background: rgb(124, 197, 118);
+  border-color: rgb(92, 160, 87);
+  color: rgb(40, 80, 40);
+  box-shadow: 0 0 15px rgba(124, 197, 118, 0.8), 0 0 25px rgba(124, 197, 118, 0.5);
+  animation: pulse-green 1.5s ease-in-out infinite;
+}
+
+.sala-highlight:hover {
+  background: rgb(124, 197, 118);
+  color: rgb(40, 80, 40);
+}
+
+@keyframes pulse-green {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(124, 197, 118, 0.8), 0 0 25px rgba(124, 197, 118, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(124, 197, 118, 1), 0 0 40px rgba(124, 197, 118, 0.7);
+  }
+}
+
 .tooltip {
   position: fixed;
   display: none;
