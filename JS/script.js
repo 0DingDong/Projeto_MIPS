@@ -33,6 +33,55 @@ if (sidebarClose && sidebar) {
   sidebarClose.addEventListener("click", () => sidebar.classList.toggle("close"));
 }
 
+// ===========================
+// SISTEMA DE NOTIFICAÇÕES (TOAST)
+// ===========================
+function initToastContainer() {
+  if (!document.getElementById('toast-container')) {
+    const container = document.createElement('div');
+    container.id = 'toast-container';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+}
+
+function showToast(message, type = 'info', duration = 5000) {
+  initToastContainer();
+  const container = document.getElementById('toast-container');
+  
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  
+  container.appendChild(toast);
+  
+  // Auto-remove após duration
+  setTimeout(() => {
+    toast.classList.add('removing');
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+// Som de alerta
+function playAlertSound() {
+  // Criar tom de alerta simples usando Web Audio API
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  oscillator.frequency.value = 800; // Frequência em Hz
+  oscillator.type = 'sine';
+  
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.5);
+}
+
 // Função auxiliar para formatar data e hora
 function formatDateTime(dateTimeStr) {
   if (!dateTimeStr) return '';
@@ -646,6 +695,8 @@ if (alertas && conteudo) {
 
     hideAccountDetailsAndShowContent(contentEl);
 
+    let previousAlertsCount = 0;
+
     // Render helper
     function renderAlerts(list) {
       const container = document.getElementById('alerts-items');
@@ -673,8 +724,22 @@ if (alertas && conteudo) {
         const alertsResp = await fetch('../BD/listar_alertas.php');
         const alertsData = await alertsResp.json();
 
-        if (alertsData && alertsData.success) renderAlerts(alertsData.alertas || []);
-        else renderAlerts([]);
+        if (alertsData && alertsData.success) {
+          const currentList = alertsData.alertas || [];
+          renderAlerts(currentList);
+
+          // Verificar novos alertas e notificar
+          if (currentList.length > previousAlertsCount) {
+            const newAlerts = currentList.slice(0, currentList.length - previousAlertsCount);
+            newAlerts.forEach(alert => {
+              showToast(`🚨 Novo alerta: Sala ${alert.sala} - ${alert.mensagem}`, 'error', 7000);
+              playAlertSound();
+            });
+          }
+          previousAlertsCount = currentList.length;
+        } else {
+          renderAlerts([]);
+        }
       } catch (err) {
         const a = document.getElementById('alerts-items'); if (a) a.innerHTML = '<p style="color:red;">Erro ao carregar alertas.</p>';
       }
