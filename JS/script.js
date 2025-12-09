@@ -732,7 +732,7 @@ if (alertas && conteudo) {
           if (currentList.length > previousAlertsCount) {
             const newAlerts = currentList.slice(0, currentList.length - previousAlertsCount);
             newAlerts.forEach(alert => {
-              showToast(`🚨 Novo alerta: Sala ${alert.sala} - ${alert.mensagem}`, 'error', 7000);
+              showToast(`🚨 Novo alerta - ${alert.mensagem}`, 'error', 7000);
               playAlertSound();
             });
           }
