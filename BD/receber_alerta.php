@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "mips_local";   // <- ESTA É A BD CERTA
+$dbname = "mips_local";
 
 // Definir timezone para Portugal (WET/WEST)
 date_default_timezone_set('Europe/Lisbon');

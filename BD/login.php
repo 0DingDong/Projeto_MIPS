@@ -19,7 +19,9 @@ if ($resultAluno->num_rows > 0) {
     if ($password === $user['aluno_pass']) {
         $_SESSION['user_type'] = "aluno";
         $_SESSION['user_id'] = $user['aluno_id'];
-        header("Location: ../html/aluno.html");
+        echo json_encode(['success' => true, 'user_type' => 'aluno']);
+        $stmt->close();
+        $conn->close();
         exit();
     }
 }
@@ -37,7 +39,9 @@ if ($resultProf->num_rows > 0) {
     if ($password === $user['professor_pass']) {
         $_SESSION['user_type'] = "professor";
         $_SESSION['user_id'] = $user['professor_id'];
-        header("Location: ../html/professor.html");
+        echo json_encode(['success' => true, 'user_type' => 'professor']);
+        $stmt->close();
+        $conn->close();
         exit();
     }
 }
@@ -55,13 +59,15 @@ if ($resultSeg->num_rows > 0) {
     if ($password === $user['seguranca_pass']) {
         $_SESSION['user_type'] = "seguranca";
         $_SESSION['user_id'] = $user['seguranca_id'];
-        header("Location: ../html/seguranca.html");
+        echo json_encode(['success' => true, 'user_type' => 'seguranca']);
+        $stmt->close();
+        $conn->close();
         exit();
     }
 }
 
 // Se chegar aqui, o email não corresponde a nenhum utilizador
-echo "Email ou senha incorretos.";
+echo json_encode(['success' => false, 'message' => 'Email ou senha incorretos.']);
 
 $stmt->close();
 $conn->close();

@@ -6,6 +6,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../CSS/style.css">
     <title>MIPS | LOGIN</title>
+    <style>
+        .custom-alert {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 10000;
+            min-width: 300px;
+            text-align: center;
+        }
+        .custom-alert.show {
+            display: block;
+        }
+        .custom-alert-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+        }
+        .custom-alert-overlay.show {
+            display: block;
+        }
+        .custom-alert-message {
+            color: #dc2626;
+            margin-bottom: 20px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .custom-alert-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .custom-alert-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
 </head>
 <body>
     <!-- Logo IPS -->
@@ -18,8 +69,15 @@
         <img src="../Img/logo_mips.png" alt="Logo MIPS" class="logo-header">
     </div>
 
+    <!-- Custom Alert -->
+    <div class="custom-alert-overlay" id="alertOverlay"></div>
+    <div class="custom-alert" id="customAlert">
+        <div class="custom-alert-message" id="alertMessage"></div>
+        <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+    </div>
+
         <!-- Caixa de Login -->
-        <form action="../BD/login.php" method="POST">
+        <form id="loginForm" action="../BD/login.php" method="POST">
                 <div class="input-box">
                         <input type="text" name="email_aluno" class="input-field" placeholder="Email" autocomplete="off" required>
                 </div>
@@ -31,5 +89,52 @@
                         <button type="submit" class="submit-btn">Entrar</button>
                 </div>
         </form>
+
+        <script>
+          function showCustomAlert(message) {
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('customAlert').classList.add('show');
+            document.getElementById('alertOverlay').classList.add('show');
+          }
+
+          function closeCustomAlert() {
+            document.getElementById('customAlert').classList.remove('show');
+            document.getElementById('alertOverlay').classList.remove('show');
+          }
+
+          const loginForm = document.getElementById('loginForm');
+          if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+              e.preventDefault();
+              const formData = new FormData(loginForm);
+              try {
+                const response = await fetch('../BD/login.php', { method: 'POST', body: formData });
+                const text = await response.text();
+                
+                // Tentar fazer parse do JSON
+                let data;
+                try {
+                  data = JSON.parse(text);
+                } catch {
+                  showCustomAlert('Email ou senha incorretos.');
+                  return;
+                }
+                
+                if (data.success) {
+                  const redirectMap = {
+                    aluno: '../html/aluno.html',
+                    professor: '../html/professor.html',
+                    seguranca: '../html/seguranca.html'
+                  };
+                  window.location.href = redirectMap[data.user_type] || '../html/login.html';
+                } else {
+                  showCustomAlert(data.message || 'Email ou senha incorretos.');
+                }
+              } catch (err) {
+                showCustomAlert('Email ou senha incorretos.');
+              }
+            });
+          }
+        </script>
 </body>
 </html>

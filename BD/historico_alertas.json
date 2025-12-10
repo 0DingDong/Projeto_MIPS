@@ -54,5 +54,37 @@
         "mensagem": "A porta F315 está aberta!",
         "opened_at": "2025-12-09 22:31:21",
         "closed_at": "2025-12-09 22:31:33"
+    },
+    {
+        "id": "1765362869311",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-10 10:34:29",
+        "closed_at": "2025-12-10 10:34:42"
+    },
+    {
+        "id": "1765363090234",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-10 10:38:10",
+        "closed_at": "2025-12-10 10:38:28"
+    },
+    {
+        "id": "1765381520480",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-10 15:45:20",
+        "closed_at": "2025-12-10 15:45:22"
+    },
+    {
+        "id": "1765381524132",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-10 15:45:24",
+        "closed_at": "2025-12-10 15:45:25"
     }
 ]
