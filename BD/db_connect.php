@@ -1,13 +1,12 @@
 <?php
-// Credenciais do Railway
-$servername = "maglev.proxy.rlwy.net";
+// Credenciais da base de dados local XAMPP/phpMyAdmin
+$servername = "localhost";
 $username = "root";
-$password = "pKbbavvgPYmYgBcoMBKSVReBpHfwnBHP";
-$dbname = "railway";
-$port = 57244;
+$password = "";
+$dbname = "mips_local";
 
 // Criar conexão
-$conn = new mysqli($servername, $username, $password, $dbname, $port);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 // Verificar conexão
 if ($conn->connect_error) {
