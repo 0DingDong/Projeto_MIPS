@@ -63,25 +63,34 @@ Projeto_MIPS/
 
 ### **aluno.html**
 - Interface para estudantes
-- Menu: Ver Mapa, Procurar Salas, Informações da Conta, Sair
+- Menu: Ver Mapa, Procurar Salas, Informações da Conta, Manual de Instruções, Sair
 - Script de validação de sessão (redireciona se não for aluno autenticado)
 - Permite pesquisar salas e visualizar mapa interativo com marcadores
 - Destaque automático de sala pesquisada no mapa
+- Manual integrado com toggle PT/EN explicando funcionalidades
 
 ### **professor.html**
 - Interface para professores
-- Menu: Reservar Sala, Gestão de Reservas, Ver Mapa, Procurar, Informações da Conta, Sair
+- Menu: Reservar Sala, Gestão de Reservas, Ver Mapa, Procurar, Informações da Conta, Manual de Instruções, Sair
 - Sistema completo de reservas de salas (criar, visualizar, cancelar)
+- Reserva requer hora de início E hora de fim
+- Ver Mapa mostra reservas do próprio dia (hoje)
+- Procurar mostra todas as reservas de todos os professores
 - Validação de horários disponíveis
 - Tabela interativa de reservas pessoais
+- Manual integrado com toggle PT/EN explicando funcionalidades
 
 ### **seguranca.html**
 - Interface para equipa de segurança
-- Menu: Alertas, Histórico de Alertas, Ver Mapa, Procurar, Informações da Conta, Sair
+- Menu: Alertas, Histórico de Alertas, Ver Mapa, Procurar, Informações da Conta, Manual de Instruções, Sair
 - Listagem de alertas ativos (portas abertas)
-- Histórico completo de alertas fechados
+- **Polling automático:** Inicia ao carregar página (não requer clicar "Alertas" primeiro)
 - Notificações toast com som quando nova porta é aberta
-- Polling automático a cada 3 segundos para novos alertas
+- Polling a cada 3 segundos para novos alertas
+- Histórico completo de alertas fechados
+- Ver Mapa mostra último alerta com data e horários (abertura-fecho)
+- Procurar mostra histórico completo de alertas da sala específica
+- Manual integrado com toggle PT/EN explicando funcionalidades
 
 ### **main.html**
 - Página de demonstração/protótipo inicial
@@ -283,12 +292,25 @@ Projeto_MIPS/
 - **Atualização dinâmica:** Após criar/cancelar, recarrega lista automaticamente
 
 #### **Sistema de Alertas (Segurança):**
-- **Polling de alertas:** `setInterval` a cada 3000ms chama `listar_alertas.php`
+- **Auto-polling de alertas:** Função `initSecurityAlertsPolling()` (linhas ~1160-1185) inicia automaticamente ao carregar página de segurança
+- **Polling contínuo:** `setInterval` a cada 3000ms chama `listar_alertas.php`
+- **Notificações automáticas:** Utilizador recebe alertas mesmo sem clicar no botão "Alertas"
 - **Contagem de alertas novos:** Compara tamanho do array atual vs anterior
 - **Toast notifications:** Função `showToast(mensagem, tipo, duração)` com animação slideIn/slideOut
 - **Som de alerta:** Função `playAlertSound()` gera beep usando Web Audio API
 - **Listagem de alertas ativos:** Renderiza cards com sala, mensagem, hora de abertura
 - **Histórico de alertas:** Carrega `listar_historico_alertas.php`, mostra tabela completa
+- **Informação no mapa:** Tooltip de segurança mostra último alerta com data e horários (abertura-fecho)
+
+#### **Manuais de Instruções (Novo):**
+- **Conteúdo inline:** Manuais armazenados como strings HTML no script.js (linhas ~1187-1469)
+- **Toggle PT/EN:** Botões de idioma mostram/escondem versões portuguesa e inglesa
+- **Conteúdo por perfil:**
+  - **Aluno:** Ver Mapa, Procurar Sala, Informações da Conta
+  - **Professor:** Reservar Sala (hora início/fim), Gestão de Reservas, Ver Mapa (reservas de hoje), Procurar (todas as reservas de todos), Informações da Conta
+  - **Segurança:** Alertas Ativos (com notificações automáticas), Histórico de Alertas, Ver Mapa (último alerta com horários), Pesquisar por Sala (histórico de alertas), Informações da Conta, Ao Receber Alerta
+- **Linguagem simplificada:** Sem jargão técnico, focado em instruções para utilizador final
+- **Acessibilidade:** Botão no menu de todas as páginas autenticadas
 
 #### **Informações da Conta:**
 - **getPageAndExpectedType():** Determina tipo de página (aluno/professor/segurança)
@@ -318,6 +340,8 @@ Projeto_MIPS/
 - Estilos para **todas as outras páginas** (aluno, professor, segurança)
 - **Navbar:** Header fixo com logo e menu burger
 - **Menu de navegação:** Links com ícones FontAwesome, responsivo
+- **Layout principal:** `.main` com `align-items: center` para centralização vertical de conteúdo
+- **Classe universal `.secao`:** Todas as caixas de conteúdo usam esta classe para centralização consistente
 - **Mapa interativo:** Container com plantas dos andares
 - **Marcadores de salas:** Círculos posicionados absolutamente sobre o mapa
   - Classes: `.sala`, `.sala-highlight`, `.sala-selected`
@@ -328,6 +352,7 @@ Projeto_MIPS/
 - **Formulários:** Inputs, selects, botões para reservas
 - **Footer:** Rodapé com informações de contacto
 - **Responsividade:** Media queries para diferentes tamanhos de ecrã
+- **Fix mobile:** Sobreposição de navbar com conteúdo resolvida via centralização
 
 ---
 
@@ -341,24 +366,43 @@ Projeto_MIPS/
 ### **Mapa Interativo de Salas:**
 - Visualização de plantas dos edifícios (Piso 2 e Piso 3)
 - Marcadores clicáveis em cada sala
-- Informação em tempo real: reservas do dia, último alerta
+- Informação em tempo real:
+  - **Professores:** Reservas do próprio dia (hoje)
+  - **Segurança:** Último alerta com data e horários (abertura-fecho)
 - Sistema de procura com destaque visual
+- Layout centralizado responsivo
 
 ### **Sistema de Reservas (Professores):**
-- Criar reserva escolhendo sala, data, hora início e fim
+- Criar reserva escolhendo sala, data, **hora início E hora fim**
+- Ver Mapa mostra apenas reservas do dia atual
+- Procurar Sala mostra todas as reservas de todos os professores
 - Validação de conflitos de horário
 - Listar reservas pessoais em tabela
 - Cancelar reservas com confirmação
 
 ### **Sistema de Alertas IoT (Segurança):**
 - Integração com sensor ESP32 (porta aberta/fechada)
-- Alertas em tempo real via polling
+- **Polling automático:** Inicia ao carregar página (sem necessidade de clicar "Alertas")
+- Alertas em tempo real a cada 3 segundos
 - Notificação visual (toast) + sonora quando nova porta abre
 - Histórico completo de alertas com timestamps
+- Procurar por sala mostra histórico completo de alertas daquela sala
+- Mapa mostra último alerta de cada sala com horários
+
+### **Manuais de Instruções Integrados (NOVO):**
+- Botão "Manual de Instruções" em todas as páginas autenticadas
+- Toggle entre Português 🇵🇹 e English 🇬🇧
+- Conteúdo simplificado adaptado a cada perfil:
+  - **Aluno:** Ver Mapa, Procurar Sala, Informações da Conta
+  - **Professor:** Reservar Sala (detalhes de hora início/fim), Gestão de Reservas, Ver Mapa (reservas de hoje), Procurar (todas as reservas), Info da Conta
+  - **Segurança:** Alertas Ativos, Histórico, Ver Mapa (último alerta), Pesquisar (histórico de alertas), Procedimentos ao receber alerta
+- Sem jargão técnico, linguagem acessível
 
 ### **Interface Responsiva:**
 - Design adaptativo para desktop, tablet e mobile
 - Menu burger para navegação em ecrãs pequenos
+- Todas as caixas de conteúdo centralizadas com classe `.secao`
+- Fix de sobreposição navbar em mobile
 
 ### **Gestão de Conta:**
 - Visualizar informações pessoais (nome, email, tipo)
@@ -1111,9 +1155,11 @@ document.addEventListener('click', async (e) => {
 
 ### **Pontos Fortes:**
 - Sistema multi-perfil com funcionalidades diferenciadas
-- Integração IoT funcional e escalável
-- Interface responsiva e moderna
-- Notificações em tempo real
+- Integração IoT funcional e escalável com polling automático
+- Interface responsiva e moderna com layout centralizado
+- Notificações em tempo real (visual + sonora)
+- Manuais integrados bilingues (PT/EN) para cada perfil
+- UX melhorada: alertas automáticos, informações contextuais no mapa
 
 ### **Pontos a Melhorar (Sugestões):**
 - **Segurança:**
