@@ -1263,10 +1263,6 @@ footer {
     width: 100%;
   }
 
-  .planta-container {
-    /* Estilos específicos do mapa já herdados de .secao */
-  }
-
   .planta-img {
     max-height: 45vh;
   }
