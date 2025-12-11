@@ -825,7 +825,7 @@ carregarMapa();
 // Handler para 'Ver Mapa'
 function renderMapaView() {
   const mapEl = document.createElement('div');
-  mapEl.className = 'planta-container';
+  mapEl.className = 'secao planta-container';
   mapEl.innerHTML = `
     <button class="seta seta-esquerda" id="anterior">&#10094;</button>
     <div class="planta-wrapper">
