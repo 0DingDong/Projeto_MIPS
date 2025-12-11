@@ -1140,3 +1140,396 @@ document.addEventListener('click', async function (e) {
     btn.textContent = oldText;
   }
 });
+
+// ===========================
+// POLLING AUTOMÁTICO DE ALERTAS (SEGURANÇA)
+// ===========================
+// Iniciar polling de alertas automaticamente para usuários de segurança
+(function initSecurityAlertsPolling() {
+  const page = (document.body && document.body.dataset && document.body.dataset.page) ? document.body.dataset.page : '';
+  
+  if (page !== 'seguranca') return;
+  
+  let previousAlertsCount = 0;
+  
+  async function checkNewAlerts() {
+    try {
+      const alertsResp = await fetch('../BD/listar_alertas.php');
+      const alertsData = await alertsResp.json();
+      
+      if (alertsData && alertsData.success) {
+        const currentList = alertsData.alertas || [];
+        
+        // Verificar novos alertas e notificar
+        if (previousAlertsCount > 0 && currentList.length > previousAlertsCount) {
+          const newAlerts = currentList.slice(0, currentList.length - previousAlertsCount);
+          newAlerts.forEach(alert => {
+            showToast(`🚨 Novo alerta - ${alert.mensagem}`, 'error', 7000);
+            playAlertSound();
+          });
+        }
+        previousAlertsCount = currentList.length;
+      }
+    } catch (err) {
+      console.error('Erro ao verificar alertas:', err);
+    }
+  }
+  
+  // Carregar contagem inicial
+  checkNewAlerts();
+  
+  // Polling a cada 3 segundos
+  window._backgroundAlertsInterval = setInterval(checkNewAlerts, 3000);
+})();
+
+// ===========================
+// MANUAL DE INSTRUÇÕES
+// ===========================
+const manualInstrucoes = document.getElementById('manual-instrucoes');
+if (manualInstrucoes && conteudo) {
+  manualInstrucoes.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    const page = (document.body && document.body.dataset && document.body.dataset.page) ? document.body.dataset.page : '';
+    
+    let manualContent = '';
+    
+    if (page === 'aluno') {
+      manualContent = `
+        <h2>📚 Manual do Aluno - MIPS</h2>
+        
+        <div style="text-align:left; max-width:800px; margin:0 auto;">
+          
+          <div style="text-align:right; margin-bottom:15px;">
+            <button onclick="document.getElementById('manual-pt').style.display='block'; document.getElementById('manual-en').style.display='none'; this.style.fontWeight='bold'; this.nextElementSibling.style.fontWeight='normal';" style="padding:8px 16px; margin:0 5px; background:#3b82f6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">🇵🇹 Português</button>
+            <button onclick="document.getElementById('manual-pt').style.display='none'; document.getElementById('manual-en').style.display='block'; this.style.fontWeight='bold'; this.previousElementSibling.style.fontWeight='normal';" style="padding:8px 16px; margin:0 5px; background:#6b7280; color:white; border:none; border-radius:6px; cursor:pointer;">🇬🇧 English</button>
+          </div>
+          
+          <div id="manual-pt">
+            <h3>🗺️ Ver Mapa</h3>
+            <p><strong>Como usar:</strong></p>
+            <ol style="line-height:1.8;">
+              <li>Clique em <strong>"Ver Mapa"</strong> no menu</li>
+              <li>Use as <strong>setas (◀ ▶)</strong> para mudar de andar</li>
+              <li>Passe o rato sobre as salas para ver informações</li>
+            </ol>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🔍 Procurar Sala</h3>
+            <ol style="line-height:1.8;">
+              <li>Clique em <strong>"Procurar"</strong></li>
+              <li>Digite o nome da sala (ex: F210)</li>
+              <li>Selecione da lista</li>
+              <li>A sala ficará destacada no mapa</li>
+            </ol>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>👤 Informações da Conta</h3>
+            <p>Clique em <strong>"Informações da Conta"</strong> para ver os seus dados.</p>
+          </div>
+          
+          <div id="manual-en" style="display:none;">
+            <h3>🗺️ View Map</h3>
+            <p><strong>How to use:</strong></p>
+            <ol style="line-height:1.8;">
+              <li>Click <strong>"Ver Mapa"</strong> (View Map) in the menu</li>
+              <li>Use the <strong>arrows (◀ ▶)</strong> to change floors</li>
+              <li>Hover over rooms to see information</li>
+            </ol>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🔍 Search Room</h3>
+            <ol style="line-height:1.8;">
+              <li>Click <strong>"Procurar"</strong> (Search)</li>
+              <li>Type the room name (e.g., F210)</li>
+              <li>Select from the list</li>
+              <li>The room will be highlighted on the map</li>
+            </ol>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>👤 Account Information</h3>
+            <p>Click <strong>"Informações da Conta"</strong> (Account Information) to view your data.</p>
+          </div>
+        </div>
+      `;
+    } else if (page === 'professor') {
+      manualContent = `
+        <h2>📚 Manual do Professor - MIPS</h2>
+        
+        <div style="text-align:left; max-width:800px; margin:0 auto;">
+          
+          <div style="text-align:right; margin-bottom:15px;">
+            <button onclick="document.getElementById('manual-pt').style.display='block'; document.getElementById('manual-en').style.display='none'; this.style.fontWeight='bold'; this.nextElementSibling.style.fontWeight='normal';" style="padding:8px 16px; margin:0 5px; background:#3b82f6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">🇵🇹 Português</button>
+            <button onclick="document.getElementById('manual-pt').style.display='none'; document.getElementById('manual-en').style.display='block'; this.style.fontWeight='bold'; this.previousElementSibling.style.fontWeight='normal';" style="padding:8px 16px; margin:0 5px; background:#6b7280; color:white; border:none; border-radius:6px; cursor:pointer;">🇬🇧 English</button>
+          </div>
+          
+          <div id="manual-pt">
+            <h3>📅 Reservar Sala</h3>
+            <ol style="line-height:1.8;">
+              <li>Clique em <strong>"Reservar Sala"</strong></li>
+              <li>Preencha:
+                <ul>
+                  <li><strong>Sala:</strong> Ex: F210, F315</li>
+                  <li><strong>Data:</strong> Escolha a data</li>
+                  <li><strong>Hora de início:</strong> Ex: 14:00</li>
+                  <li><strong>Hora de fim:</strong> Ex: 15:00</li>
+                </ul>
+              </li>
+              <li>Clique em <strong>"Reservar"</strong></li>
+            </ol>
+            <p><strong>⚠️ Nota:</strong> Não pode reservar horários já ocupados.</p>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>📋 Gestão de Reservas</h3>
+            <ol style="line-height:1.8;">
+              <li>Clique em <strong>"Gestão de Reservas"</strong></li>
+              <li>Veja todas as suas reservas</li>
+              <li>Para cancelar: clique em <strong>"Cancelar"</strong></li>
+            </ol>
+            <p><strong>💡 Dica:</strong> Para alterar uma reserva, cancele e crie nova.</p>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🗺️ Ver Mapa</h3>
+            <p>Clique em <strong>"Ver Mapa"</strong> para visualizar as salas.</p>
+            <p><strong>📌 Ao passar o rato sobre uma sala:</strong></p>
+            <ul style="line-height:1.8;">
+              <li>Verá as reservas <strong>do próprio dia</strong> (hoje)</li>
+              <li>Horários já reservados para essa sala</li>
+            </ul>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🔍 Procurar Sala</h3>
+            <p><strong>Consulte todas as reservas de uma sala específica:</strong></p>
+            <ol style="line-height:1.8;">
+              <li>Clique em <strong>"Procurar"</strong></li>
+              <li>Digite o nome da sala (ex: F210)</li>
+              <li>Selecione da lista</li>
+            </ol>
+            <p><strong>📊 O que verá:</strong></p>
+            <ul style="line-height:1.8;">
+              <li>Todas as reservas daquela sala</li>
+              <li>Reservas feitas por <strong>todos os professores</strong></li>
+              <li>Datas e horários de cada reserva</li>
+            </ul>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>👤 Informações da Conta</h3>
+            <p>Clique em <strong>"Informações da Conta"</strong> para ver os seus dados.</p>
+          </div>
+          
+          <div id="manual-en" style="display:none;">
+            <h3>📅 Reserve Room</h3>
+            <ol style="line-height:1.8;">
+              <li>Click <strong>"Reservar Sala"</strong> (Reserve Room)</li>
+              <li>Fill in:
+                <ul>
+                  <li><strong>Room:</strong> E.g., F210, F315</li>
+                  <li><strong>Date:</strong> Choose date</li>
+                  <li><strong>Start time:</strong> E.g., 14:00</li>
+                  <li><strong>End time:</strong> E.g., 15:00</li>
+                </ul>
+              </li>
+              <li>Click <strong>"Reservar"</strong> (Reserve)</li>
+            </ol>
+            <p><strong>⚠️ Note:</strong> Cannot reserve already occupied times.</p>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>📋 Reservation Management</h3>
+            <ol style="line-height:1.8;">
+              <li>Click <strong>"Gestão de Reservas"</strong> (Reservation Management)</li>
+              <li>View all your reservations</li>
+              <li>To cancel: click <strong>"Cancelar"</strong> (Cancel)</li>
+            </ol>
+            <p><strong>💡 Tip:</strong> To change a reservation, cancel and create new one.</p>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🗺️ View Map</h3>
+            <p>Click <strong>"Ver Mapa"</strong> (View Map) to visualize rooms.</p>
+            <p><strong>📌 When hovering over a room:</strong></p>
+            <ul style="line-height:1.8;">
+              <li>View reservations for <strong>today only</strong></li>
+              <li>Hours already reserved for that room</li>
+            </ul>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🔍 Search Room</h3>
+            <p><strong>Check all reservations for a specific room:</strong></p>
+            <ol style="line-height:1.8;">
+              <li>Click <strong>"Procurar"</strong> (Search)</li>
+              <li>Type the room name (e.g., F210)</li>
+              <li>Select from the list</li>
+            </ol>
+            <p><strong>📊 What you'll see:</strong></p>
+            <ul style="line-height:1.8;">
+              <li>All reservations for that room</li>
+              <li>Reservations made by <strong>all professors</strong></li>
+              <li>Dates and times of each reservation</li>
+            </ul>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>👤 Account Information</h3>
+            <p>Click <strong>"Informações da Conta"</strong> (Account Information) to view your data.</p>
+          </div>
+        </div>
+      `;
+    } else if (page === 'seguranca') {
+      manualContent = `
+        <h2>📚 Manual de Segurança - MIPS</h2>
+        
+        <div style="text-align:left; max-width:800px; margin:0 auto;">
+          
+          <div style="text-align:right; margin-bottom:15px;">
+            <button onclick="document.getElementById('manual-pt').style.display='block'; document.getElementById('manual-en').style.display='none'; this.style.fontWeight='bold'; this.nextElementSibling.style.fontWeight='normal';" style="padding:8px 16px; margin:0 5px; background:#3b82f6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">🇵🇹 Português</button>
+            <button onclick="document.getElementById('manual-pt').style.display='none'; document.getElementById('manual-en').style.display='block'; this.style.fontWeight='bold'; this.previousElementSibling.style.fontWeight='normal';" style="padding:8px 16px; margin:0 5px; background:#6b7280; color:white; border:none; border-radius:6px; cursor:pointer;">🇬🇧 English</button>
+          </div>
+          
+          <div id="manual-pt">
+            <h3>🚨 Alertas Ativos</h3>
+            <p><strong>Monitorize portas abertas em tempo real.</strong></p>
+            <ol style="line-height:1.8;">
+              <li>Clique em <strong>"Alertas"</strong></li>
+              <li>Verá uma lista de portas abertas</li>
+              <li>A lista atualiza automaticamente</li>
+            </ol>
+            <p><strong>🔔 Notificações:</strong></p>
+            <ul style="line-height:1.8;">
+              <li>Recebe som e notificação quando há novo alerta</li>
+              <li>Funciona mesmo sem a página de alertas aberta</li>
+            </ul>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>📜 Histórico de Alertas</h3>
+            <ol style="line-height:1.8;">
+              <li>Clique em <strong>"Histórico de Alertas"</strong></li>
+              <li>Veja todas as portas que já foram fechadas</li>
+              <li>Consulte data/hora de abertura e fecho</li>
+            </ol>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🗺️ Ver Mapa</h3>
+            <p>Clique em <strong>"Ver Mapa"</strong> para visualizar as salas.</p>
+            <p><strong>📌 Ao passar o rato sobre uma sala:</strong></p>
+            <ul style="line-height:1.8;">
+              <li>Verá o último alerta registado</li>
+              <li>Data e horário do alerta (abertura - fecho)</li>
+            </ul>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🔍 Pesquisar por Sala</h3>
+            <p><strong>Consulte o histórico de alertas de uma sala específica:</strong></p>
+            <ol style="line-height:1.8;">
+              <li>Clique em <strong>"Procurar"</strong></li>
+              <li>Digite o nome da sala (ex: F210)</li>
+              <li>Selecione da lista</li>
+            </ol>
+            <p><strong>📊 O que verá:</strong></p>
+            <ul style="line-height:1.8;">
+              <li>Lista completa de alertas anteriores dessa sala</li>
+              <li>Data e horário de cada abertura/fecho de porta</li>
+              <li>Histórico organizado do mais recente ao mais antigo</li>
+            </ul>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>👤 Informações da Conta</h3>
+            <p>Clique em <strong>"Informações da Conta"</strong> para ver os seus dados.</p>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🚨 Ao Receber Alerta</h3>
+            <ol style="line-height:1.8;">
+              <li>✅ Verifique a sala no mapa</li>
+              <li>✅ Note a hora e localização</li>
+              <li>✅ Se necessário, dirija-se ao local</li>
+            </ol>
+          </div>
+          
+          <div id="manual-en" style="display:none;">
+            <h3>🚨 Active Alerts</h3>
+            <p><strong>Monitor open doors in real-time.</strong></p>
+            <ol style="line-height:1.8;">
+              <li>Click <strong>"Alertas"</strong> (Alerts)</li>
+              <li>View list of open doors</li>
+              <li>List updates automatically</li>
+            </ol>
+            <p><strong>🔔 Notifications:</strong></p>
+            <ul style="line-height:1.8;">
+              <li>Receive sound and notification on new alerts</li>
+              <li>Works even without alerts page open</li>
+            </ul>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>📜 Alert History</h3>
+            <ol style="line-height:1.8;">
+              <li>Click <strong>"Histórico de Alertas"</strong> (Alert History)</li>
+              <li>View all doors that have been closed</li>
+              <li>Check opening and closing date/time</li>
+            </ol>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🗺️ View Map</h3>
+            <p>Click <strong>"Ver Mapa"</strong> (View Map) to visualize rooms.</p>
+            <p><strong>📌 When hovering over a room:</strong></p>
+            <ul style="line-height:1.8;">
+              <li>View the last registered alert</li>
+              <li>Date and time of alert (opening - closing)</li>
+            </ul>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🔍 Search by Room</h3>
+            <p><strong>Check alert history of a specific room:</strong></p>
+            <ol style="line-height:1.8;">
+              <li>Click <strong>"Procurar"</strong> (Search)</li>
+              <li>Type the room name (e.g., F210)</li>
+              <li>Select from the list</li>
+            </ol>
+            <p><strong>📊 What you'll see:</strong></p>
+            <ul style="line-height:1.8;">
+              <li>Complete list of previous alerts for that room</li>
+              <li>Date and time of each door opening/closing</li>
+              <li>History organized from most recent to oldest</li>
+            </ul>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>👤 Account Information</h3>
+            <p>Click <strong>"Informações da Conta"</strong> (Account Information) to view your data.</p>
+            
+            <hr style="margin:20px 0; border:none; border-top:1px solid #e5e7eb;">
+            
+            <h3>🚨 When Receiving Alert</h3>
+            <ol style="line-height:1.8;">
+              <li>✅ Check room on map</li>
+              <li>✅ Note time and location</li>
+              <li>✅ If necessary, go to location</li>
+            </ol>
+          </div>
+        </div>
+      `;
+    }
+    
+    const contentEl = document.createElement('div');
+    contentEl.className = 'secao';
+    contentEl.innerHTML = manualContent;
+    
+    hideAccountDetailsAndShowContent(contentEl);
+  });
+}

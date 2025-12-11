@@ -6,5 +6,69 @@
         "mensagem": "A porta F315 está aberta!",
         "opened_at": "2025-12-11 10:18:48",
         "closed_at": "2025-12-11 10:19:13"
+    },
+    {
+        "id": "1765449368703",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-11 10:36:08",
+        "closed_at": "2025-12-11 10:36:32"
+    },
+    {
+        "id": "1765449395906",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-11 10:36:35",
+        "closed_at": "2025-12-11 10:36:46"
+    },
+    {
+        "id": "1765449783579",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-11 10:43:03",
+        "closed_at": "2025-12-11 10:43:26"
+    },
+    {
+        "id": "1765449813277",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-11 10:43:33",
+        "closed_at": "2025-12-11 10:43:41"
+    },
+    {
+        "id": "1765450214944",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-11 10:50:14",
+        "closed_at": "2025-12-11 10:50:22"
+    },
+    {
+        "id": "1765450224148",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-11 10:50:24",
+        "closed_at": "2025-12-11 10:50:33"
+    },
+    {
+        "id": "1765450247455",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-11 10:50:47",
+        "closed_at": "2025-12-11 10:50:54"
+    },
+    {
+        "id": "1765457433697",
+        "sensor_id": 1,
+        "sala": "F315",
+        "mensagem": "A porta F315 está aberta!",
+        "opened_at": "2025-12-11 12:50:33",
+        "closed_at": "2025-12-11 12:50:39"
     }
 ]
