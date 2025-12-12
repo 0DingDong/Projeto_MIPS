@@ -1025,6 +1025,47 @@ footer {
 }
 
 /* ===========================
+   RESPONSIVE ROOM MARKER NUDGES
+   Adjust positions at mid-width without touching base percentages (full screen OK)
+=========================== */
+@media (max-width: 1024px) {
+  /* FLOOR 2 (Andar 2) precise adjustments */
+  /* F210, F211 → small right nudge */
+  .sala[data-nome="F210"],
+  .sala[data-nome="F211"] {
+    transform: translate(140px, -8px) !important;
+  }
+
+  /* F212, F212A, F212B → tiny right nudge */
+  .sala[data-nome="F212"] {
+    transform: translate(30px, -8px) !important;
+  }
+
+  .sala[data-nome="F212A"],
+  .sala[data-nome="F212B"] {
+    transform: translate(-125px, -8px) !important;
+  }
+
+  /* FLOOR 3 (Andar 3) precise adjustments */
+  /* F311, F313, F315, F317, F319 → tiny left correction */
+  .sala[data-nome="F311"],
+  .sala[data-nome="F313"],
+  .sala[data-nome="F315"],
+  .sala[data-nome="F317"],
+  .sala[data-nome="F319"] {
+    transform: translate(138px, -8px) !important;
+  }
+
+  /* F314A, F316, F318, F320 → tiny right correction */
+  .sala[data-nome="F314A"],
+  .sala[data-nome="F316"],
+  .sala[data-nome="F318"],
+  .sala[data-nome="F320"] {
+    transform: translate(-128px, -8px) !important;
+  }
+}
+
+/* ===========================
    MEDIA QUERIES - TABLET
 =========================== */
 @media (max-width: 1024px) {
@@ -1265,6 +1306,9 @@ footer {
 
   .planta-img {
     max-height: 45vh;
+  }
+  .andar-texto {
+    margin-top: 12px;
   }
 
   .form-reserva input {
