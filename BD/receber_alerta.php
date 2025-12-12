@@ -1,32 +1,26 @@
 <?php
+// Endpoint IoT - recebe estado dos sensores ESP32 nas portas
+// Quando porta abre: cria alerta em pending
+// Quando porta fecha: move alerta para histórico
+
+date_default_timezone_set('Europe/Lisbon');
+
+// Receber estado da porta (esperado: 'aberta' ou 'fechada')
+$estado = isset($_GET['estado']) ? $_GET['estado'] : null;
+$sensor_id = 1;  // ID do sensor (por agora fixo)
+
+// Criar ligação BD (opcional, mantém para auditoria)
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "mips_local";
-
-// Definir timezone para Portugal (WET/WEST)
-date_default_timezone_set('Europe/Lisbon');
-
-// Receber estado da porta (esperado: 'aberta' ou 'fechada')
-$estado = isset($_GET['estado']) ? $_GET['estado'] : null; // 'aberta' ou 'fechada'
-
-// Sensor associado (único por agora)
-$sensor_id = 1;
-
-// Criar ligação (mantemos por compatibilidade caso queiras gravar em BD no futuro)
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-if ($conn->connect_error) {
-  // Se a ligação falhar, ainda assim continuamos a processar as fixtures em ficheiro
-  error_log("Erro na ligação DB em receber_alerta.php: " . $conn->connect_error);
-}
-
-// Usaremos ficheiros JSON simples para gerir alertas abertos e histórico de alertas.
-// Motivo: evitar dependência em colunas DB específicas aqui e permitir um histórico funcional.
+// Usar ficheiros JSON para guardar alertas
 $pendingFile = __DIR__ . '/historico_alertas_pending.json';
 $historyFile = __DIR__ . '/historico_alertas.json';
 
-// Garante que os ficheiros existem
+// Garantir que ficheiros existem
 if (!file_exists($pendingFile)) file_put_contents($pendingFile, json_encode([]));
 if (!file_exists($historyFile)) file_put_contents($historyFile, json_encode([]));
 
@@ -36,17 +30,22 @@ if (!is_array($pending)) $pending = [];
 $history = json_decode(file_get_contents($historyFile), true);
 if (!is_array($history)) $history = [];
 
-// Mensagem e sala (a mensagem actual é fixa; adaptável conforme sensor)
 $sala = 'F315';
 $mensagem = "A porta $sala está aberta!";
 
+// ===== PORTA ABERTA =====
 if ($estado === 'aberta') {
-  // Inserir alerta pendente (se já houver um para este sensor, não duplicar)
+  // Verificar se já existe alerta pendente (evita duplicação)
   $exists = false;
   foreach ($pending as $p) {
-    if (isset($p['sensor_id']) && $p['sensor_id'] == $sensor_id) { $exists = true; break; }
+    if (isset($p['sensor_id']) && $p['sensor_id'] == $sensor_id) { 
+      $exists = true; 
+      break; 
+    }
   }
+  
   if (!$exists) {
+    // Criar novo alerta
     $entry = [
       'id' => time() . rand(100,999),
       'sensor_id' => $sensor_id,
@@ -58,7 +57,7 @@ if ($estado === 'aberta') {
     file_put_contents($pendingFile, json_encode($pending, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
   }
 
-  // Opcional: ainda gravamos um registo simples na BD para auditing (se a tabela existir)
+  // Opcional: registar também na BD
   if ($conn && !$conn->connect_error) {
     $sql = "INSERT INTO alerta (alerta_mensagem, alerta_Sensor_id) VALUES (?, ?)";
     if ($stmt = $conn->prepare($sql)) {
@@ -70,33 +69,30 @@ if ($estado === 'aberta') {
 
   echo "OK";
 
+// ===== PORTA FECHADA =====
 } elseif ($estado === 'fechada') {
-  // Ao fechar: localizar alerta pendente para este sensor, remover de pending e gravar no histórico
+  // Procurar alerta pendente para este sensor
   $foundIndex = null;
   $foundEntry = null;
+  
   foreach ($pending as $i => $p) {
-    if (isset($p['sensor_id']) && $p['sensor_id'] == $sensor_id) { $foundIndex = $i; $foundEntry = $p; break; }
+    if (isset($p['sensor_id']) && $p['sensor_id'] == $sensor_id) { 
+      $foundIndex = $i;
+      $foundEntry = $p;
+      break; 
+    }
   }
 
   if ($foundIndex !== null && $foundEntry) {
-    // Completar com closed timestamp
+    // Adicionar timestamp de fecho
     $foundEntry['closed_at'] = date('Y-m-d H:i:s');
+    // Mover para histórico
     $history[] = $foundEntry;
     // Remover de pending
     array_splice($pending, $foundIndex, 1);
+    
     file_put_contents($pendingFile, json_encode($pending, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     file_put_contents($historyFile, json_encode($history, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-  }
-
-  // Opcional: gravar também na BD que fechou (se houver colunas adequadas)
-  if ($conn && !$conn->connect_error) {
-    // Tentamos atualizar a última entrada para este sensor se existir uma coluna 'closed_at' - silenciosamente
-    $trySql = "UPDATE alerta SET alerta_mensagem = alerta_mensagem WHERE alerta_Sensor_id = ? LIMIT 1";
-    if ($stmt = @$conn->prepare($trySql)) {
-      $stmt->bind_param('i', $sensor_id);
-      @$stmt->execute();
-      @$stmt->close();
-    }
   }
 
   echo "OK";

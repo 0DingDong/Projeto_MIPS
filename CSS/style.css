@@ -170,3 +170,38 @@ form {
   form { padding: 25px; margin-top: 100px; }
   .input-box .input-field, .submit-btn { height: 48px; font-size: 14px; }
 }
+
+/* Botão voltar para main */
+.back-to-main {
+  margin-top: 20px;
+  text-align: center;
+  animation: fadeIn 1s ease 0.3s both;
+}
+
+.back-btn {
+  display: inline-block;
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  color: #2563eb;
+  background: rgba(59, 130, 246, 0.1);
+  transform: translateX(-3px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -56,9 +56,45 @@
         .custom-alert-btn:hover {
             opacity: 0.9;
         }
+        .back-to-main {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .back-to-main:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+            transform: translateY(-2px);
+        }
+        .back-to-main svg {
+            transition: transform 0.3s ease;
+        }
+        .back-to-main:hover svg {
+            transform: translateX(-3px);
+        }
     </style>
 </head>
 <body>
+    <!-- Botão Voltar ao Início -->
+    <a href="main.html" class="back-to-main">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Voltar ao Início
+    </a>
     <!-- Logo IPS -->
     <div class="logo1">
         <img src="../Img/logo_ips.jpg" alt="Logo IPS">

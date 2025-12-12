@@ -1,12 +1,15 @@
 <?php
+// Sistema de login - verifica email e password em 3 tabelas (aluno, professor, segurança)
+// Se encontrar match, cria sessão e retorna tipo de utilizador em JSON
+
 include('db_connect.php');
 session_start();
 
-// Recebe dados enviados do login.html
+// Receber dados do formulário
 $email = $_POST['email_aluno'];
 $password = $_POST['pass_aluno'];
 
-// --------------------- LOGIN ALUNO ---------------------
+// ===== TENTAR LOGIN COMO ALUNO =====
 $sqlAluno = "SELECT * FROM aluno WHERE aluno_email = ?";
 $stmt = $conn->prepare($sqlAluno);
 $stmt->bind_param("s", $email);
@@ -16,6 +19,7 @@ $resultAluno = $stmt->get_result();
 if ($resultAluno->num_rows > 0) {
     $user = $resultAluno->fetch_assoc();
     
+    // Se password bate, criar sessão
     if ($password === $user['aluno_pass']) {
         $_SESSION['user_type'] = "aluno";
         $_SESSION['user_id'] = $user['aluno_id'];
@@ -26,7 +30,7 @@ if ($resultAluno->num_rows > 0) {
     }
 }
 
-// --------------------- LOGIN PROFESSOR ---------------------
+// ===== TENTAR LOGIN COMO PROFESSOR =====
 $sqlProf = "SELECT * FROM professor WHERE professor_email = ?";
 $stmt = $conn->prepare($sqlProf);
 $stmt->bind_param("s", $email);
@@ -46,7 +50,7 @@ if ($resultProf->num_rows > 0) {
     }
 }
 
-// --------------------- LOGIN SEGURANÇA ---------------------
+// ===== TENTAR LOGIN COMO SEGURANÇA =====
 $sqlSeg = "SELECT * FROM seguranca WHERE seguranca_email = ?";
 $stmt = $conn->prepare($sqlSeg);
 $stmt->bind_param("s", $email);
@@ -66,7 +70,7 @@ if ($resultSeg->num_rows > 0) {
     }
 }
 
-// Se chegar aqui, o email não corresponde a nenhum utilizador
+// Se chegou aqui, credenciais incorretas
 echo json_encode(['success' => false, 'message' => 'Email ou senha incorretos.']);
 
 $stmt->close();
